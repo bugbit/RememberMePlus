@@ -191,6 +191,7 @@ Mantener alineación con estas decisiones del proyecto:
 - tareas con activación, desactivación, reactivación y posposición
 - notificaciones locales con mayor visibilidad para tareas importantes
 - pantalla principal centrada en tareas vencidas y tareas próximas según umbral configurado
+- la estructura de la base de datos se encuentra en `context/database.sql`
 
 ## Qué evitar
 
