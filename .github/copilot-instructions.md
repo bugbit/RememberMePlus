@@ -3,7 +3,7 @@
 ## General Guidelines
 - El repositorio exige documentar cada cambio significativo en /docs, registrarse en CHANGELOG.md siguiendo Keep a Changelog e incrementar la versión del proyecto manteniendo consistencia entre artefactos.
 - En este repositorio debo seguir AGENTS.md y .github/copilot-instructions.md: Clean Architecture + DDD + SOLID, stack .NET 10 MAUI/Android/MVVM/SQLite, y considerar `context/database.sql` como estructura de BD.
-- La base de datos a usar es SQLite.
+- La base de datos a usar es SQLite, y se usará Dapper como parte del stack de acceso a datos junto con SQLite.
 
 ## Code Style
 - Si uso constructores primarios para inyección de dependencias, debo asignar cada dependencia a un campo readonly con prefijo _ y no usar directamente el parámetro del constructor en métodos o propiedades.

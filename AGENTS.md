@@ -28,6 +28,7 @@ Generar únicamente contenido directamente relacionado con estas tecnologías y 
 - **Android**
 - **MVVM**
 - **SQLite**
+- **Dapper**
 - notificaciones locales
 - localización de recursos
 
