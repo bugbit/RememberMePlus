@@ -1,20 +1,7 @@
 ```mermaid
 erDiagram
-  Task {
-    identity idtask pk
-    string title "*"
-    string description
-    bool is_insistent "*"
-    datetime date_create
-    datetime date_due_at "* Fecha de vencimientoo"
-    datetime date_due_at_last " Ultima Fecha de vencimiento"
-    int idttaskscheduler fk
-    bit is_repeat "*"
-    bit is_active "*"           
-  }
-
   TaskScheduler {
-    identity idttaskscheduler
+    identity id_taskscheduler pk
     datetime hour_due_at "* Hora que hay que hacer la tarea"
     datetime hour_save_due_at " Hora guardada para hacer horas temporales"
     int recurrence_interval "*"
@@ -29,4 +16,26 @@ erDiagram
     int recurrence_interval_month "el primer martes, segundo martes, ... cada n weekday"
   }
 
+  TaskEvent {
+    identity id_task_event pk
+    string name "*"
+    int id_taskscheduler fk
+  }  
+
+  Task {
+    identity id_task pk
+    string title "*"
+    string description
+    bool is_insistent "*"
+    datetime date_create
+    datetime date_due_at "* Fecha de vencimientoo"
+    datetime date_due_at_last " Ultima Fecha de vencimiento"
+    int id_ttaskscheduler fk
+    int id_task_event fk
+    bit is_repeat "*"
+    bit is_active "*"           
+  }
+
   TaskScheduler ||--|{ Task : contains
+  TaskEvent ||--|{ Task : contains
+  TaskScheduler ||--|{ TaskEvent : contains
