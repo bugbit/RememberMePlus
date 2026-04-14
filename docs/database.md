@@ -4,7 +4,7 @@ erDiagram
     identity idtask pk
     string title "*"
     string description
-    int priority "* 0=> normal, 999=> "
+    bool is_insistent "*"
     datetime date_create
     datetime date_due_at "* Fecha de vencimientoo"
     datetime date_due_at_last " Ultima Fecha de vencimiento"
