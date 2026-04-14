@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.0.8] - 2026-04-14
+### Changed
+- Updated `IDatabaseInitializer.InitializeAsync` to return `Task` instead of `Task<int?>`.
+- Updated `DatabaseInitializer` to store database version in an internal field for later processing instead of returning it.
+
 ## [1.0.7] - 2026-04-14
 ### Changed
 - Updated `DatabaseInitializer.InitializeAsync` to set `app = null` when `GetFirstAsync` throws an exception.

@@ -5,5 +5,5 @@ public interface IDatabaseInitializer
     /// <summary>
     /// Inicializa el acceso a datos leyendo la versión de la base de datos.
     /// </summary>
-    Task<int?> InitializeAsync(CancellationToken cancellationToken = default);
+    Task InitializeAsync(CancellationToken cancellationToken = default);
 }

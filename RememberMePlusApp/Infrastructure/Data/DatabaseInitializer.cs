@@ -5,11 +5,12 @@ namespace RememberMePlusApp.Infrastructure.Data;
 public sealed class DatabaseInitializer(IAppRepository appRepository) : IDatabaseInitializer
 {
     private readonly IAppRepository _appRepository = appRepository;
+    private int? _databaseVersion;
 
     /// <summary>
     /// Inicializa el acceso a datos leyendo la versión de la base de datos.
     /// </summary>
-    public async Task<int?> InitializeAsync(CancellationToken cancellationToken = default)
+    public async Task InitializeAsync(CancellationToken cancellationToken = default)
     {
         AppRecord? app;
 
@@ -22,6 +23,6 @@ public sealed class DatabaseInitializer(IAppRepository appRepository) : IDatabas
             app = null;
         }
 
-        return app?.Version;
+        _databaseVersion = app?.Version;
     }
 }
