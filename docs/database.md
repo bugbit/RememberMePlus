@@ -20,12 +20,18 @@ erDiagram
     identity id_task_event pk
     string name "*"
     int id_taskscheduler fk
-  }  
+  }
+
+  TaskGroup {
+    identity id_task_group pk
+    string name "*"
+  }
 
   Task {
     identity id_task pk
     string title "*"
     string description
+    int id_task_group fk
     bool is_insistent "*"
     datetime date_create
     datetime date_due_at "* Fecha de vencimientoo"
@@ -38,4 +44,5 @@ erDiagram
 
   TaskScheduler ||--|{ Task : contains
   TaskEvent ||--|{ Task : contains
+  TaskGroup ||--|{ Task : contains
   TaskScheduler ||--|{ TaskEvent : contains
