@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RememberMePlusApp.Infrastructure.Data;
 
 namespace RememberMePlusApp
@@ -17,13 +18,18 @@ namespace RememberMePlusApp
                 });
 
             builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
-            builder.Services.AddSingleton<DatabaseInitializer>();
+            builder.Services.AddSingleton<IAppRepository, AppRepository>();
+            builder.Services.AddSingleton<IDatabaseInitializer, DatabaseInitializer>();
 
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
 
-            return builder.Build();
+            var app = builder.Build();
+            var databaseInitializer = app.Services.GetRequiredService<IDatabaseInitializer>();
+            databaseInitializer.InitializeAsync().GetAwaiter().GetResult();
+
+            return app;
         }
     }
 }
