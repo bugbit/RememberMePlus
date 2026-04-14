@@ -1,9 +1,16 @@
 ```mermaid
 erDiagram
+  App {
+    identity id_app pk  "Solo puede haber un registro. Siempre se trabaja con el primero"
+    int version "*"
+    int relative_offset_minutes "Minutos antes que se venza la tarea"
+    int snooze_minutes "*"
+  }
+
   TaskScheduler {
     identity id_taskscheduler pk
     datetime hour_due_at "* Hora que hay que hacer la tarea"
-    datetime hour_save_due_at " Hora guardada para hacer horas temporales"
+    datetime hour_saved_due_at " Hora guardada para hacer horas temporales"
     int recurrence_interval "*"
     int recurrence_type "* 1=> dia, 2=> semana, 3=> mes, 4=> año"
     bit recurrence_sunday
@@ -36,9 +43,9 @@ erDiagram
     datetime date_create
     datetime date_due_at "* Fecha de vencimientoo"
     datetime date_due_at_last " Ultima Fecha de vencimiento"
+    int snooze_minutes
     int id_ttaskscheduler fk
     int id_task_event fk
-    bit is_repeat "*"
     bit is_active "*"           
   }
 
