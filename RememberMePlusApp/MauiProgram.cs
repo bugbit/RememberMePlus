@@ -20,6 +20,7 @@ namespace RememberMePlusApp
             builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
             builder.Services.AddSingleton<IAppRepository, AppRepository>();
             builder.Services.AddSingleton<IDatabaseInitializer, DatabaseInitializer>();
+            builder.Services.AddSingleton<IDatabaseSchemaRepository, DatabaseSchemaRepository>();
 
 #if DEBUG
             builder.Logging.AddDebug();
