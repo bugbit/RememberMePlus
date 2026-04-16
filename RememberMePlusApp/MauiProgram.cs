@@ -22,7 +22,8 @@ namespace RememberMePlusApp
             builder.Services.AddSingleton<IDatabaseInitializer, DatabaseInitializer>();
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
+            builder.Logging.SetMinimumLevel(LogLevel.Debug);
 #endif
 
             var app = builder.Build();
