@@ -22,17 +22,14 @@ namespace RememberMePlusApp
             builder.Services.AddSingleton<IDatabaseInitializer, DatabaseInitializer>();
             builder.Services.AddSingleton<IDatabaseSchemaRepository, DatabaseSchemaRepository>();
             builder.Services.AddTransient<MainPage>();
+            builder.Services.AddSingleton<App>();
 
 #if DEBUG
             builder.Logging.AddDebug();
             builder.Logging.SetMinimumLevel(LogLevel.Debug);
 #endif
 
-            var app = builder.Build();
-            var databaseInitializer = app.Services.GetRequiredService<IDatabaseInitializer>();
-            databaseInitializer.InitializeAsync().GetAwaiter().GetResult();
-
-            return app;
+            return builder.Build();
         }
     }
 }
