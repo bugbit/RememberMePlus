@@ -28,6 +28,7 @@ Generar únicamente contenido directamente relacionado con estas tecnologías y 
 - **Android**
 - **MVVM**
 - **SQLite**
+- **Dapper**
 - notificaciones locales
 - localización de recursos
 
@@ -44,6 +45,7 @@ En cada cambio debes comprobar que se cumplen estas reglas:
 5. La **UI** no contiene lógica de negocio.
 6. Mantener consistencia con **DDD**: entidades, value objects, servicios de dominio, agregados y reglas del dominio donde corresponda.
 7. Aplicar **SOLID** en diseño, extensibilidad, acoplamiento y responsabilidades.
+8. Toda clase de tipo **servicio** o **repositorio** debe tener su **interfaz** correspondiente y consumirse mediante abstracción.
 
 Si una propuesta rompe estas reglas, debe corregirse antes de darla por válida.
 
@@ -191,6 +193,7 @@ Mantener alineación con estas decisiones del proyecto:
 - tareas con activación, desactivación, reactivación y posposición
 - notificaciones locales con mayor visibilidad para tareas importantes
 - pantalla principal centrada en tareas vencidas y tareas próximas según umbral configurado
+- la estructura de la base de datos se encuentra en `context/database.sql`
 
 ## Qué evitar
 

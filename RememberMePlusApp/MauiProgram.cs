@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using RememberMePlusApp.Infrastructure.Data;
 
 namespace RememberMePlusApp
 {
@@ -15,8 +17,16 @@ namespace RememberMePlusApp
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
+            builder.Services.AddSingleton<IAppRepository, AppRepository>();
+            builder.Services.AddSingleton<IDatabaseInitializer, DatabaseInitializer>();
+            builder.Services.AddSingleton<IDatabaseSchemaRepository, DatabaseSchemaRepository>();
+            builder.Services.AddTransient<MainPage>();
+            builder.Services.AddSingleton<App>();
+
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
+            builder.Logging.SetMinimumLevel(LogLevel.Debug);
 #endif
 
             return builder.Build();

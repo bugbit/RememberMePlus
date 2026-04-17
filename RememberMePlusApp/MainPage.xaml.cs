@@ -1,24 +1,30 @@
-﻿namespace RememberMePlusApp
+﻿using RememberMePlusApp.Infrastructure.Data;
+
+namespace RememberMePlusApp
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
+        private readonly IAppRepository _appRepository;
 
-        public MainPage()
+        public MainPage(IAppRepository appRepository)
         {
+            _appRepository = appRepository;
             InitializeComponent();
         }
 
-        private void OnCounterClicked(object? sender, EventArgs e)
+        protected override async void OnAppearing()
         {
-            count++;
+            base.OnAppearing();
 
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
+            var app = await _appRepository.GetFirstAsync();
 
-            SemanticScreenReader.Announce(CounterBtn.Text);
+            if (app is not null)
+            {
+                LabelIdApp.Text = app.IdApp.ToString();
+                LabelVersion.Text = app.Version.ToString();
+                LabelRelativeOffset.Text = app.RelativeOffsetMinutes.ToString();
+                LabelSnooze.Text = app.SnoozeMinutes.ToString();
+            }
         }
     }
 }
