@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Elementos de la solución/">
     <File Path="AGENTS.md" />
+    <File Path="docs/database.md" />
     <File Path="README.md" />
   </Folder>
   <Project Path="RememberMePlusApp/RememberMePlusApp.csproj">
