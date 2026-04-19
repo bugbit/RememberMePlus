@@ -18,6 +18,7 @@ namespace RememberMePlusApp
                 });
 
             builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
+            builder.Services.AddSingleton<IUnitOfWorkFactory, UnitOfWorkFactory>();
             builder.Services.AddSingleton<IAppRepository, AppRepository>();
             builder.Services.AddSingleton<IDatabaseInitializer, DatabaseInitializer>();
             builder.Services.AddSingleton<IDatabaseSchemaRepository, DatabaseSchemaRepository>();

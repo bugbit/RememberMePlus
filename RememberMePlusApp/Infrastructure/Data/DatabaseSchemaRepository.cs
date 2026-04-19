@@ -5,11 +5,9 @@ using System.Reflection;
 namespace RememberMePlusApp.Infrastructure.Data;
 
 public sealed class DatabaseSchemaRepository(
-    IDbConnectionFactory dbConnectionFactory,
     IAppRepository appRepository,
     ILogger<DatabaseSchemaRepository> logger) : IDatabaseSchemaRepository
 {
-    private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
     private readonly IAppRepository _appRepository = appRepository;
     private readonly ILogger<DatabaseSchemaRepository> _logger = logger;
 
@@ -17,13 +15,13 @@ public sealed class DatabaseSchemaRepository(
     /// Crea o actualiza el esquema de la base de datos según la versión detectada.
     /// Si no existe registro en App, ejecuta el script de creación inicial (database-v1.sql).
     /// </summary>
-    public async Task CreateOrUpdateDatabaseAsync(CancellationToken cancellationToken = default)
+    public async Task CreateOrUpdateDatabaseAsync(IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
     {
         AppRecord? app;
 
         try
         {
-            app = await _appRepository.GetFirstAsync(cancellationToken);
+            app = await _appRepository.GetFirstAsync(unitOfWork, cancellationToken);
         }
         catch
         {
@@ -32,11 +30,11 @@ public sealed class DatabaseSchemaRepository(
 
         if (app is null)
         {
-            await ExecuteScriptAsync("database-v1.sql", cancellationToken);
+            await ExecuteScriptAsync(unitOfWork, "database-v1.sql", cancellationToken);
         }
     }
 
-    private async Task ExecuteScriptAsync(string scriptFileName, CancellationToken cancellationToken)
+    private async Task ExecuteScriptAsync(IUnitOfWork unitOfWork, string scriptFileName, CancellationToken cancellationToken)
     {
         _logger.LogDebug("Executing database script: {ScriptFileName}", scriptFileName);
 
@@ -49,9 +47,10 @@ public sealed class DatabaseSchemaRepository(
         using var reader = new StreamReader(stream);
         var sql = await reader.ReadToEndAsync(cancellationToken);
 
-        await using var connection = _dbConnectionFactory.CreateConnection();
-        await connection.OpenAsync(cancellationToken);
-        await connection.ExecuteAsync(sql);
+        await unitOfWork.Connection.ExecuteAsync(new CommandDefinition(
+            sql,
+            transaction: unitOfWork.Transaction,
+            cancellationToken: cancellationToken));
 
         _logger.LogInformation("Database script executed successfully: {ScriptFileName}", scriptFileName);
     }

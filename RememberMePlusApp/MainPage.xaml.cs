@@ -4,10 +4,12 @@ namespace RememberMePlusApp
 {
     public partial class MainPage : ContentPage
     {
+        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private readonly IAppRepository _appRepository;
 
-        public MainPage(IAppRepository appRepository)
+        public MainPage(IUnitOfWorkFactory unitOfWorkFactory, IAppRepository appRepository)
         {
+            _unitOfWorkFactory = unitOfWorkFactory;
             _appRepository = appRepository;
             InitializeComponent();
         }
@@ -16,7 +18,8 @@ namespace RememberMePlusApp
         {
             base.OnAppearing();
 
-            var app = await _appRepository.GetFirstAsync();
+            await using var uow = await _unitOfWorkFactory.CreateAsync();
+            var app = await _appRepository.GetFirstAsync(uow);
 
             if (app is not null)
             {

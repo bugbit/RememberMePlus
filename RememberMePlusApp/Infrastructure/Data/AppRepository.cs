@@ -2,14 +2,12 @@ using Dapper;
 
 namespace RememberMePlusApp.Infrastructure.Data;
 
-public sealed class AppRepository(IDbConnectionFactory dbConnectionFactory) : IAppRepository
+public sealed class AppRepository : IAppRepository
 {
-    private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
-
     /// <summary>
     /// Obtiene el primer registro de la tabla App.
     /// </summary>
-    public async Task<AppRecord?> GetFirstAsync(CancellationToken cancellationToken = default)
+    public async Task<AppRecord?> GetFirstAsync(IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
     {
         const string query = """
             SELECT
@@ -22,10 +20,7 @@ public sealed class AppRepository(IDbConnectionFactory dbConnectionFactory) : IA
             LIMIT 1;
             """;
 
-        await using var connection = _dbConnectionFactory.CreateConnection();
-        await connection.OpenAsync(cancellationToken);
-
-        return await connection.QueryFirstOrDefaultAsync<AppRecord>(
-            new CommandDefinition(query, cancellationToken: cancellationToken));
+        return await unitOfWork.Connection.QueryFirstOrDefaultAsync<AppRecord>(
+            new CommandDefinition(query, transaction: unitOfWork.Transaction, cancellationToken: cancellationToken));
     }
 }

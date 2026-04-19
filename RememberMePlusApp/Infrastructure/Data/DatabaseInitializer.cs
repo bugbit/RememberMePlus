@@ -2,15 +2,22 @@ using Dapper;
 
 namespace RememberMePlusApp.Infrastructure.Data;
 
-public sealed class DatabaseInitializer(IDatabaseSchemaRepository databaseSchemaRepository) : IDatabaseInitializer
+public sealed class DatabaseInitializer(
+    IUnitOfWorkFactory unitOfWorkFactory,
+    IDatabaseSchemaRepository databaseSchemaRepository) : IDatabaseInitializer
 {
+    private readonly IUnitOfWorkFactory _unitOfWorkFactory = unitOfWorkFactory;
     private readonly IDatabaseSchemaRepository _databaseSchemaRepository = databaseSchemaRepository;
 
     /// <summary>
-    /// Inicializa el acceso a datos leyendo la versión de la base de datos.
+    /// Inicializa el acceso a datos creando o actualizando el esquema de la base de datos.
     /// </summary>
     public async Task InitializeAsync(CancellationToken cancellationToken = default)
     {
-        await _databaseSchemaRepository.CreateOrUpdateDatabaseAsync(cancellationToken);
+        await using var uow = await _unitOfWorkFactory.CreateAsync(cancellationToken);
+
+        await _databaseSchemaRepository.CreateOrUpdateDatabaseAsync(uow, cancellationToken);
+
+        await uow.CommitAsync(cancellationToken);
     }
 }
