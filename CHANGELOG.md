@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.2.2] - 2026-04-19
+### Added
+- Añadido `ITaskRepository` y `TaskRepository` para listar tareas activas y marcarlas como completadas.
+- Añadido `MainPageViewModel` con carga de tareas pendientes y comando para completar mediante check.
+
+### Changed
+- `MainPage` ahora muestra la lista de tareas pendientes con `CheckBox` para completarlas.
+- Registrados `ITaskRepository` y `MainPageViewModel` en DI.
+
 ## [1.2.1] - 2026-04-16
 ### Added
 - `MainPage` muestra los campos de la tabla `App` (IdApp, Version, RelativeOffsetMinutes, SnoozeMinutes).

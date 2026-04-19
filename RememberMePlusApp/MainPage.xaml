@@ -2,32 +2,53 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="RememberMePlusApp.MainPage"
+             x:Name="MainPageRoot"
              Title="RememberMe+">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="30" Spacing="20">
+    <VerticalStackLayout Padding="24" Spacing="16">
+        <Label Text="Tareas pendientes"
+               Style="{StaticResource Headline}"
+               SemanticProperties.HeadingLevel="Level1" />
 
-            <Label Text="Información de la App"
-                   Style="{StaticResource Headline}"
-                   SemanticProperties.HeadingLevel="Level1" />
+        <Label Text="Marca el check para completar cada tarea."
+               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
 
-            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="12">
+        <ActivityIndicator IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}" />
 
-                <Label Grid.Row="0" Grid.Column="0" Text="ID App:" FontAttributes="Bold" VerticalOptions="Center" />
-                <Label Grid.Row="0" Grid.Column="1" x:Name="LabelIdApp" VerticalOptions="Center" />
+        <CollectionView ItemsSource="{Binding PendingTasks}"
+                        SelectionMode="None">
+            <CollectionView.EmptyView>
+                <Label Text="No hay tareas pendientes."
+                       HorizontalOptions="Center" />
+            </CollectionView.EmptyView>
 
-                <Label Grid.Row="1" Grid.Column="0" Text="Versión:" FontAttributes="Bold" VerticalOptions="Center" />
-                <Label Grid.Row="1" Grid.Column="1" x:Name="LabelVersion" VerticalOptions="Center" />
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="12"
+                          ColumnDefinitions="Auto,*"
+                          RowDefinitions="Auto,Auto"
+                          ColumnSpacing="12"
+                          RowSpacing="4">
+                        <CheckBox Grid.RowSpan="2"
+                                  IsChecked="{Binding IsCompleted}"
+                                  Command="{Binding Source={x:Reference MainPageRoot}, Path=BindingContext.CompleteTaskCommand}"
+                                  CommandParameter="{Binding .}" />
 
-                <Label Grid.Row="2" Grid.Column="0" Text="Offset (min):" FontAttributes="Bold" VerticalOptions="Center" />
-                <Label Grid.Row="2" Grid.Column="1" x:Name="LabelRelativeOffset" VerticalOptions="Center" />
+                        <Label Grid.Column="1"
+                               Text="{Binding Title}"
+                               FontAttributes="Bold"
+                               LineBreakMode="TailTruncation" />
 
-                <Label Grid.Row="3" Grid.Column="0" Text="Snooze (min):" FontAttributes="Bold" VerticalOptions="Center" />
-                <Label Grid.Row="3" Grid.Column="1" x:Name="LabelSnooze" VerticalOptions="Center" />
-
-            </Grid>
-
-        </VerticalStackLayout>
-    </ScrollView>
+                        <Label Grid.Row="1"
+                               Grid.Column="1"
+                               Text="{Binding DueAt, StringFormat='Vence: {0}'}"
+                               FontSize="12"
+                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
 
 </ContentPage>

@@ -1,33 +1,22 @@
-﻿using RememberMePlusApp.Infrastructure.Data;
+﻿using RememberMePlusApp.ViewModels;
 
 namespace RememberMePlusApp
 {
     public partial class MainPage : ContentPage
     {
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
-        private readonly IAppRepository _appRepository;
+        private readonly MainPageViewModel _viewModel;
 
-        public MainPage(IUnitOfWorkFactory unitOfWorkFactory, IAppRepository appRepository)
+        public MainPage(MainPageViewModel viewModel)
         {
-            _unitOfWorkFactory = unitOfWorkFactory;
-            _appRepository = appRepository;
+            _viewModel = viewModel;
             InitializeComponent();
+            BindingContext = _viewModel;
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-
-            await using var uow = await _unitOfWorkFactory.CreateAsync();
-            var app = await _appRepository.GetFirstAsync(uow);
-
-            if (app is not null)
-            {
-                LabelIdApp.Text = app.IdApp.ToString();
-                LabelVersion.Text = app.Version.ToString();
-                LabelRelativeOffset.Text = app.RelativeOffsetMinutes.ToString();
-                LabelSnooze.Text = app.SnoozeMinutes.ToString();
-            }
+            await _viewModel.LoadAsync();
         }
     }
 }
