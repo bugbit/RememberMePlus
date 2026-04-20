@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RememberMePlusApp.Infrastructure.Data;
+using RememberMePlusApp.ViewModels;
 
 namespace RememberMePlusApp
 {
@@ -20,6 +21,8 @@ namespace RememberMePlusApp
             builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
             builder.Services.AddSingleton<IUnitOfWorkFactory, UnitOfWorkFactory>();
             builder.Services.AddSingleton<IAppRepository, AppRepository>();
+            builder.Services.AddSingleton<ITaskRepository, TaskRepository>();
+            builder.Services.AddTransient<MainPageViewModel>();
             builder.Services.AddSingleton<IDatabaseInitializer, DatabaseInitializer>();
             builder.Services.AddSingleton<IDatabaseSchemaRepository, DatabaseSchemaRepository>();
             builder.Services.AddTransient<MainPage>();
