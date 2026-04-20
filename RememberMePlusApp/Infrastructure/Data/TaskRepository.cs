@@ -4,7 +4,7 @@ namespace RememberMePlusApp.Infrastructure.Data;
 
 public sealed class TaskRepository : ITaskRepository
 {
-    public async Task<IReadOnlyList<TaskItemRecord>> GetPendingAsync(IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<TaskItemRecord>> GetPendingForTodayAsync(IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
     {
         const string query = """
             SELECT
@@ -13,6 +13,7 @@ public sealed class TaskRepository : ITaskRepository
                 date_due_at AS DateDueAt
             FROM Task
             WHERE is_active = 1
+              AND date(date_due_at) = date('now', 'localtime')
             ORDER BY date_due_at ASC;
             """;
 
