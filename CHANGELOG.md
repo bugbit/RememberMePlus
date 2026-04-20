@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.2.4] - 2026-04-20
+### Changed
+- `MainPage` ahora muestra tareas pendientes de hoy o vencidas.
+- `TaskRepository` actualiza el filtro de la vista principal a tareas activas con `date_due_at <= fecha local actual`.
+- `ITaskRepository` expone `GetPendingTodayOrOverdueAsync` para reflejar la intención del caso de uso.
+
 ## [1.2.3] - 2026-04-19
 ### Changed
 - `MainPage` ahora se enfoca en mostrar únicamente las tareas pendientes de hoy.

@@ -6,7 +6,7 @@
              Title="RememberMe+">
 
     <VerticalStackLayout Padding="24" Spacing="16">
-        <Label Text="Tareas pendientes de hoy"
+        <Label Text="Tareas pendientes de hoy o vencidas"
                Style="{StaticResource Headline}"
                SemanticProperties.HeadingLevel="Level1" />
 
