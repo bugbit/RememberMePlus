@@ -34,8 +34,8 @@
 		<ApplicationId>com.microbyt.remembermeplusapp</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>1.2.9</ApplicationDisplayVersion>
-		<ApplicationVersion>15</ApplicationVersion>
+		<ApplicationDisplayVersion>1.2.12</ApplicationDisplayVersion>
+		<ApplicationVersion>18</ApplicationVersion>
 
 		<!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
 		<WindowsPackageType>None</WindowsPackageType>

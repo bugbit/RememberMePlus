@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.2.12] - 2026-05-01
+### Fixed
+- `TaskRepository.CompleteAsync` ahora cambia `is_active` a `0` solo cuando la tarea **no** es recurrente (`id_taskscheduler IS NULL` e `id_task_event IS NULL`).
+
+## [1.2.11] - 2026-05-01
+### Fixed
+- Ajustada la detección de tarea recurrente en `TaskRepository.CompleteAsync`: ahora solo cambia `is_active` cuando `id_taskscheduler` o `id_task_event` no es `NULL`.
+
+## [1.2.10] - 2026-05-01
+### Changed
+- `TaskRepository.CompleteAsync` ahora guarda `date_due_at_last = date_due_at`, actualiza `date_due_at` a la fecha local actual y solo cambia `is_active` cuando la tarea tiene recurrencia (`id_task_event IS NOT NULL`).
+
 ## [1.2.9] - 2026-05-01
 ### Fixed
 - Corregida llamada en `DatabaseInitializer` a `IUnitOfWorkFactory.CreateAsync` usando argumento nombrado para `cancellationToken`, evitando el error de compilación por conversión `CancellationToken` -> `bool`.

@@ -34,8 +34,12 @@ public sealed class TaskRepository : ITaskRepository
 
         const string command = """
             UPDATE Task
-            SET is_active = 0,
-                date_due_at_last = date_due_at
+            SET date_due_at_last = date_due_at,
+                date_due_at = date('now', 'localtime'),
+                is_active = CASE
+                    WHEN id_taskscheduler IS NULL AND id_task_event IS NULL THEN 0
+                    ELSE is_active
+                END
             WHERE id_task = @TaskId;
             """;
 
