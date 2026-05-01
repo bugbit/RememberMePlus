@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.2.9] - 2026-05-01
+### Fixed
+- Corregida llamada en `DatabaseInitializer` a `IUnitOfWorkFactory.CreateAsync` usando argumento nombrado para `cancellationToken`, evitando el error de compilación por conversión `CancellationToken` -> `bool`.
+
 ## [1.2.8] - 2026-05-01
 ### Changed
 - `IUnitOfWorkFactory.CreateAsync` ahora permite indicar `useTransaction` para crear una unidad de trabajo sin transacción cuando no sea necesaria.

@@ -14,7 +14,7 @@ public sealed class DatabaseInitializer(
     /// </summary>
     public async Task InitializeAsync(CancellationToken cancellationToken = default)
     {
-        await using var uow = await _unitOfWorkFactory.CreateAsync(cancellationToken);
+        await using var uow = await _unitOfWorkFactory.CreateAsync(cancellationToken: cancellationToken);
 
         await _databaseSchemaRepository.CreateOrUpdateDatabaseAsync(uow, cancellationToken);
 
