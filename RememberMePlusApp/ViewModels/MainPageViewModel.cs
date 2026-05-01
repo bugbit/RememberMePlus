@@ -72,6 +72,9 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
         }
 
         await using var unitOfWork = await _unitOfWorkFactory.CreateAsync(useTransaction: false);
+
+        // TODO: De momento solo marca la tarea como completada. Falta implementar la lógica de cuando se completa una tarea recurrente
+        // se tiene que calcular la fecha de vencimiento según recurrencia.
         await _taskRepository.CompleteAsync(task.Id, unitOfWork);
         await unitOfWork.CommitAsync();
 
