@@ -22,7 +22,7 @@ public sealed class TaskRepository : ITaskRepository
 
         var rows = await sqlExecutor.QueryAsync<TaskItemRecord>(query, cancellationToken: cancellationToken);
 
-        return rows.AsList();
+        return rows.ToList();
     }
 
     public async Task CompleteAsync(long taskId, IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
