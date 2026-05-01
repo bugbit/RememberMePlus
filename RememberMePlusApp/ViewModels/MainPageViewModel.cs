@@ -71,7 +71,7 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
             return;
         }
 
-        await using var unitOfWork = await _unitOfWorkFactory.CreateAsync();
+        await using var unitOfWork = await _unitOfWorkFactory.CreateAsync(useTransaction: false);
         await _taskRepository.CompleteAsync(task.Id, unitOfWork);
         await unitOfWork.CommitAsync();
 
