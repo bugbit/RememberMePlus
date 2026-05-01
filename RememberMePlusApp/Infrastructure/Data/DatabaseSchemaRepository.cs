@@ -1,4 +1,3 @@
-using Dapper;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 
@@ -11,10 +10,6 @@ public sealed class DatabaseSchemaRepository(
     private readonly IAppRepository _appRepository = appRepository;
     private readonly ILogger<DatabaseSchemaRepository> _logger = logger;
 
-    /// <summary>
-    /// Crea o actualiza el esquema de la base de datos según la versión detectada.
-    /// Si no existe registro en App, ejecuta el script de creación inicial (database-v1.sql).
-    /// </summary>
     public async Task CreateOrUpdateDatabaseAsync(IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
     {
         AppRecord? app;
@@ -36,6 +31,11 @@ public sealed class DatabaseSchemaRepository(
 
     private async Task ExecuteScriptAsync(IUnitOfWork unitOfWork, string scriptFileName, CancellationToken cancellationToken)
     {
+        if (unitOfWork is not ISqlExecutor sqlExecutor)
+        {
+            return;
+        }
+
         _logger.LogDebug("Executing database script: {ScriptFileName}", scriptFileName);
 
         var resourceName = $"RememberMePlusApp.Resources.Scripts.{scriptFileName}";
@@ -47,10 +47,7 @@ public sealed class DatabaseSchemaRepository(
         using var reader = new StreamReader(stream);
         var sql = await reader.ReadToEndAsync(cancellationToken);
 
-        await unitOfWork.Connection.ExecuteAsync(new CommandDefinition(
-            sql,
-            transaction: unitOfWork.Transaction,
-            cancellationToken: cancellationToken));
+        await sqlExecutor.ExecuteAsync(sql, cancellationToken: cancellationToken);
 
         _logger.LogInformation("Database script executed successfully: {ScriptFileName}", scriptFileName);
     }

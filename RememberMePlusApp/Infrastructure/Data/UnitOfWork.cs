@@ -1,3 +1,4 @@
+using Dapper;
 using System.Data.Common;
 
 namespace RememberMePlusApp.Infrastructure.Data;
@@ -5,17 +6,17 @@ namespace RememberMePlusApp.Infrastructure.Data;
 /// <summary>
 /// Unidad de trabajo que gestiona una conexión y transacción SQLite.
 /// </summary>
-public sealed class UnitOfWork : IUnitOfWork
+public sealed class UnitOfWork : IUnitOfWork, ISqlExecutor
 {
-    public DbConnection Connection { get; }
-    public DbTransaction Transaction { get; private set; }
+    private readonly DbConnection _connection;
+    private readonly DbTransaction _transaction;
 
     private bool _completed;
 
     private UnitOfWork(DbConnection connection, DbTransaction transaction)
     {
-        Connection = connection;
-        Transaction = transaction;
+        _connection = connection;
+        _transaction = transaction;
     }
 
     /// <summary>
@@ -32,30 +33,53 @@ public sealed class UnitOfWork : IUnitOfWork
         return new UnitOfWork(connection, transaction);
     }
 
-    /// <summary>
-    /// Confirma todos los cambios de la unidad de trabajo.
-    /// </summary>
+    public async Task<IEnumerable<T>> QueryAsync<T>(
+        string sql,
+        object? parameters = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await _connection.QueryAsync<T>(
+            new CommandDefinition(sql, parameters, _transaction, cancellationToken: cancellationToken));
+    }
+
+    public async Task<T?> QueryFirstOrDefaultAsync<T>(
+        string sql,
+        object? parameters = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await _connection.QueryFirstOrDefaultAsync<T>(
+            new CommandDefinition(sql, parameters, _transaction, cancellationToken: cancellationToken));
+    }
+
+    public async Task<int> ExecuteAsync(
+        string sql,
+        object? parameters = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await _connection.ExecuteAsync(
+            new CommandDefinition(sql, parameters, _transaction, cancellationToken: cancellationToken));
+    }
+
     public async Task CommitAsync(CancellationToken cancellationToken = default)
     {
-        await Transaction.CommitAsync(cancellationToken);
+        await _transaction.CommitAsync(cancellationToken);
         _completed = true;
     }
 
-    /// <summary>
-    /// Revierte todos los cambios de la unidad de trabajo.
-    /// </summary>
     public async Task RollbackAsync(CancellationToken cancellationToken = default)
     {
-        await Transaction.RollbackAsync(cancellationToken);
+        await _transaction.RollbackAsync(cancellationToken);
         _completed = true;
     }
 
     public async ValueTask DisposeAsync()
     {
         if (!_completed)
-            await Transaction.RollbackAsync();
+        {
+            await _transaction.RollbackAsync();
+        }
 
-        await Transaction.DisposeAsync();
-        await Connection.DisposeAsync();
+        await _transaction.DisposeAsync();
+        await _connection.DisposeAsync();
     }
 }

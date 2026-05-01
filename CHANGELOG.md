@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.2.7] - 2026-05-01
+### Fixed
+- Corregido `TaskRepository.GetPendingTodayOrOverdueAsync`: reemplazo de `AsList()` por `ToList()` para evitar dependencia de extensión no resuelta.
+
+## [1.2.6] - 2026-05-01
+### Changed
+- `IUnitOfWork` deja de heredar de `ISqlExecutor` y vuelve a exponer únicamente control transaccional (`CommitAsync`/`RollbackAsync`).
+- `UnitOfWork` implementa explícitamente `ISqlExecutor` además de `IUnitOfWork`.
+- Repositorios (`AppRepository`, `TaskRepository`, `DatabaseSchemaRepository`) usan cast seguro `unitOfWork is ISqlExecutor sqlExecutor` antes de ejecutar SQL.
+
+## [1.2.5] - 2026-05-01
+### Changed
+- `IUnitOfWork` ya no expone `Connection` ni `Transaction`; ahora implementa `ISqlExecutor` para consultas y comandos SQL.
+- `UnitOfWork` encapsula internamente la conexión/transacción y centraliza `QueryAsync`, `QueryFirstOrDefaultAsync` y `ExecuteAsync`.
+- `AppRepository`, `TaskRepository` y `DatabaseSchemaRepository` dejan de acceder directamente a `DbConnection`/`DbTransaction`.
+
 ## [1.2.4] - 2026-04-20
 ### Changed
 - `MainPage` ahora muestra tareas pendientes de hoy o vencidas.

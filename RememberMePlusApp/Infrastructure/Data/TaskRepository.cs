@@ -1,11 +1,14 @@
-using Dapper;
-
 namespace RememberMePlusApp.Infrastructure.Data;
 
 public sealed class TaskRepository : ITaskRepository
 {
     public async Task<IReadOnlyList<TaskItemRecord>> GetPendingTodayOrOverdueAsync(IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
     {
+        if (unitOfWork is not ISqlExecutor sqlExecutor)
+        {
+            return [];
+        }
+
         const string query = """
             SELECT
                 id_task AS IdTask,
@@ -17,14 +20,18 @@ public sealed class TaskRepository : ITaskRepository
             ORDER BY date_due_at ASC;
             """;
 
-        var rows = await unitOfWork.Connection.QueryAsync<TaskItemRecord>(
-            new CommandDefinition(query, transaction: unitOfWork.Transaction, cancellationToken: cancellationToken));
+        var rows = await sqlExecutor.QueryAsync<TaskItemRecord>(query, cancellationToken: cancellationToken);
 
-        return rows.AsList();
+        return rows.ToList();
     }
 
     public async Task CompleteAsync(long taskId, IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
     {
+        if (unitOfWork is not ISqlExecutor sqlExecutor)
+        {
+            return;
+        }
+
         const string command = """
             UPDATE Task
             SET is_active = 0,
@@ -32,10 +39,6 @@ public sealed class TaskRepository : ITaskRepository
             WHERE id_task = @TaskId;
             """;
 
-        await unitOfWork.Connection.ExecuteAsync(new CommandDefinition(
-            command,
-            parameters: new { TaskId = taskId },
-            transaction: unitOfWork.Transaction,
-            cancellationToken: cancellationToken));
+        await sqlExecutor.ExecuteAsync(command, new { TaskId = taskId }, cancellationToken);
     }
 }
