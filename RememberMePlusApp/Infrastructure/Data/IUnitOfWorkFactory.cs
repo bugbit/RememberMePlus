@@ -5,5 +5,5 @@ namespace RememberMePlusApp.Infrastructure.Data;
 /// </summary>
 public interface IUnitOfWorkFactory
 {
-    Task<IUnitOfWork> CreateAsync(CancellationToken cancellationToken = default);
+    Task<IUnitOfWork> CreateAsync(bool useTransaction = true, CancellationToken cancellationToken = default);
 }

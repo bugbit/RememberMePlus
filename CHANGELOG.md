@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.2.8] - 2026-05-01
+### Changed
+- `IUnitOfWorkFactory.CreateAsync` ahora permite indicar `useTransaction` para crear una unidad de trabajo sin transacción cuando no sea necesaria.
+- `UnitOfWork` crea transacción de forma opcional y maneja `CommitAsync`/`RollbackAsync` como no-op cuando no existe transacción activa.
+- `MainPageViewModel.LoadAsync` crea `IUnitOfWork` sin transacción para lecturas simples de una sola consulta.
+
 ## [1.2.7] - 2026-05-01
 ### Fixed
 - Corregido `TaskRepository.GetPendingTodayOrOverdueAsync`: reemplazo de `AsList()` por `ToList()` para evitar dependencia de extensión no resuelta.

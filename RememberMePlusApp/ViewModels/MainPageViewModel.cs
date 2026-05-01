@@ -49,7 +49,7 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
     {
         IsLoading = true;
 
-        await using var unitOfWork = await _unitOfWorkFactory.CreateAsync(cancellationToken);
+        await using var unitOfWork = await _unitOfWorkFactory.CreateAsync(useTransaction: false, cancellationToken);
         var pendingTasks = await _taskRepository.GetPendingTodayOrOverdueAsync(unitOfWork, cancellationToken);
 
         PendingTasks.Clear();
