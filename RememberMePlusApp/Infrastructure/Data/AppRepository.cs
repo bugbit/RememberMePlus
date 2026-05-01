@@ -1,5 +1,3 @@
-using Dapper;
-
 namespace RememberMePlusApp.Infrastructure.Data;
 
 public sealed class AppRepository : IAppRepository
@@ -9,6 +7,11 @@ public sealed class AppRepository : IAppRepository
     /// </summary>
     public async Task<AppRecord?> GetFirstAsync(IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
     {
+        if (unitOfWork is not ISqlExecutor sqlExecutor)
+        {
+            return null;
+        }
+
         const string query = """
             SELECT
                 id_app AS IdApp,
@@ -20,7 +23,6 @@ public sealed class AppRepository : IAppRepository
             LIMIT 1;
             """;
 
-        return await unitOfWork.Connection.QueryFirstOrDefaultAsync<AppRecord>(
-            new CommandDefinition(query, transaction: unitOfWork.Transaction, cancellationToken: cancellationToken));
+        return await sqlExecutor.QueryFirstOrDefaultAsync<AppRecord>(query, cancellationToken: cancellationToken);
     }
 }
