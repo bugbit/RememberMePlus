@@ -37,7 +37,7 @@ public sealed class TaskRepository : ITaskRepository
             SET date_due_at_last = date_due_at,
                 date_due_at = date('now', 'localtime'),
                 is_active = CASE
-                    WHEN id_taskscheduler IS NOT NULL OR id_task_event IS NOT NULL THEN 0
+                    WHEN id_taskscheduler IS NULL AND id_task_event IS NULL THEN 0
                     ELSE is_active
                 END
             WHERE id_task = @TaskId;

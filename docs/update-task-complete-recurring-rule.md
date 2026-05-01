@@ -11,7 +11,7 @@ Ajustar la lógica de completado en `TaskRepository.CompleteAsync` para preserva
 ## Decisiones técnicas
 - `date_due_at_last` conserva el valor anterior de `date_due_at`.
 - `date_due_at` se establece con `date('now', 'localtime')` para usar la fecha local del dispositivo.
-- `is_active` se actualiza de forma condicional con `CASE` cuando existe `id_taskscheduler` o `id_task_event` (criterio de recurrencia).
+- `is_active` se actualiza a `0` de forma condicional solo cuando `id_taskscheduler` e `id_task_event` son `NULL` (tarea no recurrente).
 
 ## Impacto en arquitectura
 El cambio queda encapsulado en infraestructura (`TaskRepository`) y no introduce lógica de negocio en UI ni acoplamientos cruzados, manteniendo la separación de capas.

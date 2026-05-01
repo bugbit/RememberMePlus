@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.2.12] - 2026-05-01
+### Fixed
+- `TaskRepository.CompleteAsync` ahora cambia `is_active` a `0` solo cuando la tarea **no** es recurrente (`id_taskscheduler IS NULL` e `id_task_event IS NULL`).
+
 ## [1.2.11] - 2026-05-01
 ### Fixed
 - Ajustada la detección de tarea recurrente en `TaskRepository.CompleteAsync`: ahora solo cambia `is_active` cuando `id_taskscheduler` o `id_task_event` no es `NULL`.
