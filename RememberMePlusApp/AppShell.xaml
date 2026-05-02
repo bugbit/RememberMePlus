@@ -6,9 +6,16 @@
     xmlns:local="clr-namespace:RememberMePlusApp"
     Title="RememberMePlusApp">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <ShellContent
+            Title="Home"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage" />
+
+        <ShellContent
+            Title="Añadir"
+            ContentTemplate="{DataTemplate local:AddTaskPage}"
+            Route="AddTaskPage" />
+    </TabBar>
 
 </Shell>

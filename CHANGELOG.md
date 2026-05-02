@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.3.0] - 2026-05-02
+### Added
+- Añadida nueva pestaña `Añadir` en `AppShell` con la página `AddTaskPage`.
+
+### Changed
+- `AppShell` ahora usa `TabBar` con dos pestañas: `Home` y `Añadir`.
+
 ## [1.2.12] - 2026-05-01
 ### Fixed
 - `TaskRepository.CompleteAsync` ahora cambia `is_active` a `0` solo cuando la tarea **no** es recurrente (`id_taskscheduler IS NULL` e `id_task_event IS NULL`).
