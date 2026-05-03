@@ -23,9 +23,11 @@ namespace RememberMePlusApp
             builder.Services.AddSingleton<IAppRepository, AppRepository>();
             builder.Services.AddSingleton<ITaskRepository, TaskRepository>();
             builder.Services.AddTransient<MainPageViewModel>();
+            builder.Services.AddTransient<AddTaskPageViewModel>();
             builder.Services.AddSingleton<IDatabaseInitializer, DatabaseInitializer>();
             builder.Services.AddSingleton<IDatabaseSchemaRepository, DatabaseSchemaRepository>();
             builder.Services.AddTransient<MainPage>();
+            builder.Services.AddTransient<AddTaskPage>();
             builder.Services.AddSingleton<App>();
 
 #if DEBUG

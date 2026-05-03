@@ -9,8 +9,19 @@
                Style="{StaticResource Headline}"
                SemanticProperties.HeadingLevel="Level1" />
 
-        <Label Text="Aquí podrás crear una nueva tarea."
+        <Label Text="Provisional: esta pantalla crea solo tareas no recurrentes."
                TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+
+        <Entry Placeholder="Título"
+               Text="{Binding Title}" />
+
+        <DatePicker Date="{Binding DueDate}" />
+
+        <Button Text="Guardar tarea"
+                Command="{Binding SaveCommand}" />
+
+        <ActivityIndicator IsRunning="{Binding IsSaving}"
+                           IsVisible="{Binding IsSaving}" />
     </VerticalStackLayout>
 
 </ContentPage>

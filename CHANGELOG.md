@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.3.1] - 2026-05-03
+### Added
+- La pantalla `Añadir` ahora permite crear tareas no recurrentes con título y fecha de vencimiento.
+
+### Changed
+- La pantalla `Añadir` muestra explícitamente que el alta es provisionalmente solo para tareas no recurrentes.
+
 ## [1.3.0] - 2026-05-02
 ### Added
 - Añadida nueva pestaña `Añadir` en `AppShell` con la página `AddTaskPage`.
