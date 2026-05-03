@@ -17,6 +17,8 @@
 
         <DatePicker Date="{Binding DueDate}" />
 
+        <TimePicker Time="{Binding DueTime}" />
+
         <Button Text="Guardar tarea"
                 Command="{Binding SaveCommand}" />
 

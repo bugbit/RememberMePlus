@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.3.2] - 2026-05-03
+### Changed
+- La pantalla `Añadir` ahora permite seleccionar también la hora de vencimiento (`DatePicker` + `TimePicker`) para tareas no recurrentes.
+- El guardado provisional de tareas no recurrentes persiste `date_due_at` con fecha y hora (`yyyy-MM-dd HH:mm:ss`).
+
 ## [1.3.1] - 2026-05-03
 ### Added
 - La pantalla `Añadir` ahora permite crear tareas no recurrentes con título y fecha de vencimiento.

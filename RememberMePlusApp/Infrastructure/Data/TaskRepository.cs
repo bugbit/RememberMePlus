@@ -63,7 +63,7 @@ public sealed class TaskRepository : ITaskRepository
         await sqlExecutor.ExecuteAsync(command, new
         {
             Title = title,
-            DateDueAt = dueDate.ToString("yyyy-MM-dd")
+            DateDueAt = dueDate.ToString("yyyy-MM-dd HH:mm:ss")
         }, cancellationToken);
     }
 }

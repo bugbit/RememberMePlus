@@ -12,6 +12,7 @@ public sealed class AddTaskPageViewModel(IUnitOfWorkFactory unitOfWorkFactory, I
 
     private string _title = string.Empty;
     private DateTime _dueDate = DateTime.Today;
+    private TimeSpan _dueTime = DateTime.Now.TimeOfDay;
     private bool _isSaving;
     private Command? _saveCommand;
 
@@ -50,6 +51,22 @@ public sealed class AddTaskPageViewModel(IUnitOfWorkFactory unitOfWorkFactory, I
         }
     }
 
+
+    public TimeSpan DueTime
+    {
+        get => _dueTime;
+        set
+        {
+            if (_dueTime == value)
+            {
+                return;
+            }
+
+            _dueTime = value;
+            OnPropertyChanged();
+        }
+    }
+
     public bool IsSaving
     {
         get => _isSaving;
@@ -81,11 +98,13 @@ public sealed class AddTaskPageViewModel(IUnitOfWorkFactory unitOfWorkFactory, I
         IsSaving = true;
 
         await using var unitOfWork = await _unitOfWorkFactory.CreateAsync();
-        await _taskRepository.AddNonRecurringAsync(Title.Trim(), DueDate, unitOfWork);
+        var dueAt = DueDate.Date.Add(DueTime);
+        await _taskRepository.AddNonRecurringAsync(Title.Trim(), dueAt, unitOfWork);
         await unitOfWork.CommitAsync();
 
         Title = string.Empty;
         DueDate = DateTime.Today;
+        DueTime = DateTime.Now.TimeOfDay;
         IsSaving = false;
     }
 
