@@ -26,7 +26,6 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="12"
-                          BackgroundColor="{Binding HighlightColor}"
                           ColumnDefinitions="Auto,*"
                           RowDefinitions="Auto,Auto"
                           ColumnSpacing="12"
@@ -39,6 +38,7 @@
                         <Label Grid.Column="1"
                                Text="{Binding Title}"
                                FontAttributes="Bold"
+                               TextColor="{Binding TaskTextColor}"
                                LineBreakMode="TailTruncation" />
 
                         <Label Grid.Row="1"
