@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.3.7] - 2026-05-04
+### Fixed
+- Eliminado definitivamente `TryParseDueAt` duplicado en `MainPageViewModel` que referenciaba `DueAt` fuera de contexto y mantenía el error de compilación.
+
 ## [1.3.6] - 2026-05-04
 ### Fixed
 - Restaurado `TryParseDueAt` en `PendingTaskItemViewModel` para mantener la evaluación de vencida/casi vencida y evitar error de compilación.

@@ -82,17 +82,6 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
         PendingTasks.Remove(task);
     }
 
-
-    private bool TryParseDueAt(out DateTime dueAtLocal)
-    {
-        return DateTime.TryParseExact(
-            DueAt,
-            "yyyy-MM-dd HH:mm:ss",
-            CultureInfo.InvariantCulture,
-            DateTimeStyles.AssumeLocal,
-            out dueAtLocal);
-    }
-
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
