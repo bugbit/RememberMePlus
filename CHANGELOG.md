@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.3.9] - 2026-05-04
+### Changed
+- Ajustados los colores de fuente de la funcionalidad de urgencia en `MainPage` a tonos actuales definidos por diseño visual: vencidas `#B91C1C` y casi vencidas `#C2410C`.
+
 ## [1.3.8] - 2026-05-04
 ### Changed
 - En `MainPage`, el resaltado de tareas vencidas o casi vencidas ahora se aplica al color de fuente del título (rojo para vencidas, naranja para casi vencidas), en lugar de usar color de fondo.

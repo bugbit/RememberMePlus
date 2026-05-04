@@ -113,12 +113,12 @@ public sealed class PendingTaskItemViewModel(long id, string title, string dueAt
         {
             if (IsOverdue)
             {
-                return Colors.Red;
+                return Color.FromArgb("#B91C1C");
             }
 
             if (IsNearDue)
             {
-                return Colors.Orange;
+                return Color.FromArgb("#C2410C");
             }
 
             return Colors.Black;
