@@ -26,6 +26,7 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="12"
+                          BackgroundColor="{Binding HighlightColor}"
                           ColumnDefinitions="Auto,*"
                           RowDefinitions="Auto,Auto"
                           ColumnSpacing="12"

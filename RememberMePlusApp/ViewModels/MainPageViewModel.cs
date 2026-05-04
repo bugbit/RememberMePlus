@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Globalization;
 using System.Windows.Input;
 using RememberMePlusApp.Infrastructure.Data;
 
@@ -81,6 +82,17 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
         PendingTasks.Remove(task);
     }
 
+
+    private bool TryParseDueAt(out DateTime dueAtLocal)
+    {
+        return DateTime.TryParseExact(
+            DueAt,
+            "yyyy-MM-dd HH:mm:ss",
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.AssumeLocal,
+            out dueAtLocal);
+    }
+
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -89,6 +101,7 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
 
 public sealed class PendingTaskItemViewModel(long id, string title, string dueAt) : INotifyPropertyChanged
 {
+    private static readonly TimeSpan NearDueThreshold = TimeSpan.FromHours(2);
     private bool _isCompleted;
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -98,6 +111,30 @@ public sealed class PendingTaskItemViewModel(long id, string title, string dueAt
     public string Title { get; } = title;
 
     public string DueAt { get; } = dueAt;
+
+    public bool IsOverdue => TryParseDueAt(out var dueAtLocal) && dueAtLocal <= DateTime.Now;
+
+    public bool IsNearDue => TryParseDueAt(out var dueAtLocal)
+        && dueAtLocal > DateTime.Now
+        && dueAtLocal <= DateTime.Now.Add(NearDueThreshold);
+
+    public Color HighlightColor
+    {
+        get
+        {
+            if (IsOverdue)
+            {
+                return Color.FromArgb("#FEE2E2");
+            }
+
+            if (IsNearDue)
+            {
+                return Color.FromArgb("#FEF3C7");
+            }
+
+            return Colors.Transparent;
+        }
+    }
 
     public bool IsCompleted
     {
@@ -112,6 +149,17 @@ public sealed class PendingTaskItemViewModel(long id, string title, string dueAt
             _isCompleted = value;
             OnPropertyChanged();
         }
+    }
+
+
+    private bool TryParseDueAt(out DateTime dueAtLocal)
+    {
+        return DateTime.TryParseExact(
+            DueAt,
+            "yyyy-MM-dd HH:mm:ss",
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.AssumeLocal,
+            out dueAtLocal);
     }
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
