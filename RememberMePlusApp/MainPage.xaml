@@ -38,8 +38,21 @@
                         <Label Grid.Column="1"
                                Text="{Binding Title}"
                                FontAttributes="Bold"
-                               TextColor="{Binding TaskTextColor}"
-                               LineBreakMode="TailTruncation" />
+                               TextColor="{AppThemeBinding Light=#111827, Dark=#F9FAFB}"
+                               LineBreakMode="TailTruncation">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding IsOverdue}"
+                                             Value="True">
+                                    <Setter Property="TextColor" Value="#B91C1C" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding IsNearDue}"
+                                             Value="True">
+                                    <Setter Property="TextColor" Value="#C2410C" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
 
                         <Label Grid.Row="1"
                                Grid.Column="1"

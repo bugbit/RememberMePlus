@@ -107,24 +107,6 @@ public sealed class PendingTaskItemViewModel(long id, string title, string dueAt
         && dueAtLocal > DateTime.Now
         && dueAtLocal <= DateTime.Now.Add(NearDueThreshold);
 
-    public Color TaskTextColor
-    {
-        get
-        {
-            if (IsOverdue)
-            {
-                return Color.FromArgb("#B91C1C");
-            }
-
-            if (IsNearDue)
-            {
-                return Color.FromArgb("#C2410C");
-            }
-
-            return Colors.Black;
-        }
-    }
-
     public bool IsCompleted
     {
         get => _isCompleted;

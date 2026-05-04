@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.3.10] - 2026-05-04
+### Changed
+- Mejorada la legibilidad del título de tareas no urgentes en `MainPage` usando color de fuente por tema (`Light/Dark`) en lugar de negro fijo.
+- El color rojo/naranja de urgencia ahora se aplica con `DataTrigger` en XAML sobre `IsOverdue` e `IsNearDue`.
+
 ## [1.3.9] - 2026-05-04
 ### Changed
 - Ajustados los colores de fuente de la funcionalidad de urgencia en `MainPage` a tonos actuales definidos por diseño visual: vencidas `#B91C1C` y casi vencidas `#C2410C`.
