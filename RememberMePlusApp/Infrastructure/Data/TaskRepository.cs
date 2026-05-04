@@ -57,7 +57,7 @@ public sealed class TaskRepository : ITaskRepository
             INSERT INTO Task
             (title, description, id_task_group, is_insistent, datetime_create, date_due_at, date_due_at_last, datetime_notify_at, snooze_minutes, id_taskscheduler, id_task_event, is_active)
             VALUES
-            (@Title, NULL, NULL, 0, datetime('now', 'localtime'), @DateDueAt, NULL, NULL, NULL, NULL, NULL, 1);
+            (@Title, NULL, NULL, 0, datetime('now', 'localtime'), @DateDueAt, NULL, @DateDueAt, NULL, NULL, NULL, 1);
             """;
 
         await sqlExecutor.ExecuteAsync(command, new
