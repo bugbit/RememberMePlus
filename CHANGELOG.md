@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.3.6] - 2026-05-04
+### Fixed
+- Restaurado `TryParseDueAt` en `PendingTaskItemViewModel` para mantener la evaluación de vencida/casi vencida y evitar error de compilación.
+
+## [1.3.5] - 2026-05-04
+### Fixed
+- Corregido error de compilación en `MainPageViewModel`: se eliminó un método `TryParseDueAt` sobrante que referenciaba `DueAt` fuera de contexto.
+
 ## [1.3.4] - 2026-05-04
 ### Changed
 - La pantalla principal colorea cada tarea solo cuando está vencida (rojo suave) o casi vencida dentro de las próximas 2 horas (ámbar suave).
