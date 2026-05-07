@@ -1,9 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using RememberMePlusApp.Infrastructure.Data;
+﻿using RememberMePlusApp.Infrastructure.Data;
 
 namespace RememberMePlusApp
 {
-    public partial class App : Application
+    public partial class App : Microsoft.Maui.Controls.Application
     {
         private readonly IDatabaseInitializer _databaseInitializer;
 
