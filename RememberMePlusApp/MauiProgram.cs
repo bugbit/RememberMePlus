@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using RememberMePlusApp.Application.Home;
+using RememberMePlusApp.Application.Time;
 using RememberMePlusApp.Infrastructure.Data;
 using RememberMePlusApp.ViewModels;
 
@@ -22,6 +24,8 @@ namespace RememberMePlusApp
             builder.Services.AddSingleton<IUnitOfWorkFactory, UnitOfWorkFactory>();
             builder.Services.AddSingleton<IAppRepository, AppRepository>();
             builder.Services.AddSingleton<ITaskRepository, TaskRepository>();
+            builder.Services.AddSingleton<IAppClock, LocalAppClock>();
+            builder.Services.AddTransient<IHomeDashboardService, HomeDashboardService>();
             builder.Services.AddTransient<MainPageViewModel>();
             builder.Services.AddTransient<AddTaskPageViewModel>();
             builder.Services.AddSingleton<IDatabaseInitializer, DatabaseInitializer>();

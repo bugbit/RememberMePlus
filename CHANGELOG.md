@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.3.6] - 2026-05-07
+### Fixed
+- Eliminada la dependencia del campo inexistente `is_insistent` en consultas, inserciones y presentación de tareas.
+
+### Changed
+- La ordenación del dashboard principal usa `date_due_at` y `title` sin requerir campos de prioridad no persistidos.
+
+## [1.3.5] - 2026-05-07
+### Added
+- Implementada la pantalla principal attention-first con secciones para tareas vencidas y próximas a vencer.
+- Añadido servicio de aplicación para clasificar el dashboard principal según `App.relative_offset_minutes`.
+- Añadida consulta de tareas activas hasta el fin de la ventana de próximo vencimiento y acción de posposición.
+
+### Changed
+- La pantalla principal ahora se actualiza automáticamente cada minuto mientras está visible.
+
+## [1.3.4] - 2026-05-07
+### Added
+- Documentado el diseño attention-first de la pantalla principal para tareas vencidas y próximas a vencer.
+
 ## [1.3.3] - 2026-05-04
 ### Fixed
 - Al crear tareas no recurrentes, `datetime_notify_at` ahora se guarda con el mismo valor de `date_due_at`.

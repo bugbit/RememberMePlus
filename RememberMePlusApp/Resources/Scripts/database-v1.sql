@@ -56,7 +56,6 @@ CREATE TABLE IF NOT EXISTS Task (
     title TEXT NOT NULL,
     description TEXT,
     id_task_group INTEGER,
-    is_insistent INTEGER NOT NULL,
     datetime_create TEXT,
     date_due_at TEXT NOT NULL,
     date_due_at_last TEXT,

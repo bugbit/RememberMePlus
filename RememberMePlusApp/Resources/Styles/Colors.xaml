@@ -27,6 +27,27 @@
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
 
+    <Color x:Key="OverdueBackgroundLight">#FDECEC</Color>
+    <Color x:Key="OverdueBackgroundDark">#3A1010</Color>
+    <Color x:Key="OverdueBorderLight">#C62828</Color>
+    <Color x:Key="OverdueBorderDark">#FF6B6B</Color>
+    <Color x:Key="OverdueTextLight">#7F0000</Color>
+    <Color x:Key="OverdueTextDark">#FFE5E5</Color>
+    <Color x:Key="DueSoonBackgroundLight">#FFF4D6</Color>
+    <Color x:Key="DueSoonBackgroundDark">#332400</Color>
+    <Color x:Key="DueSoonBorderLight">#F57C00</Color>
+    <Color x:Key="DueSoonBorderDark">#FFB74D</Color>
+    <Color x:Key="CriticalSoonBorderLight">#D84315</Color>
+    <Color x:Key="CriticalSoonBorderDark">#FF8A65</Color>
+    <Color x:Key="CardSurfaceLight">#FFFFFF</Color>
+    <Color x:Key="CardSurfaceDark">#1E1E1E</Color>
+    <Color x:Key="PrimaryActionLight">#1B5E20</Color>
+    <Color x:Key="PrimaryActionDark">#81C784</Color>
+    <Color x:Key="SecondaryActionLight">#0D47A1</Color>
+    <Color x:Key="SecondaryActionDark">#90CAF9</Color>
+    <Color x:Key="TemporaryActionLight">#424242</Color>
+    <Color x:Key="TemporaryActionDark">#BDBDBD</Color>
+
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
     <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>

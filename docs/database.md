@@ -39,7 +39,6 @@ erDiagram
     string title "*"
     string description
     int id_task_group fk
-    bool is_insistent "*"
     datetime datetime_create
     datetime date_due_at "* Fecha de vencimiento"
     datetime date_due_at_last " Ultima Fecha de vencimiento"

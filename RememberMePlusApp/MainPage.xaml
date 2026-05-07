@@ -3,52 +3,258 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="RememberMePlusApp.MainPage"
              x:Name="MainPageRoot"
-             Title="RememberMe+">
+             Title="RememberMe+"
+             BackgroundColor="{AppThemeBinding Light=#F7F7F7, Dark=#111111}">
 
-    <VerticalStackLayout Padding="24" Spacing="16">
-        <Label Text="Tareas pendientes de hoy o vencidas"
-               Style="{StaticResource Headline}"
-               SemanticProperties.HeadingLevel="Level1" />
+    <Grid RowDefinitions="Auto,*" Padding="16" RowSpacing="14">
+        <Border StrokeThickness="0"
+                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                Padding="18">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="22" />
+            </Border.StrokeShape>
 
-        <Label Text="Marca el check para completar cada tarea."
-               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" ColumnSpacing="12" RowSpacing="4">
+                <Label Text="RememberMe+"
+                       FontSize="30"
+                       FontAttributes="Bold"
+                       SemanticProperties.HeadingLevel="Level1" />
 
-        <ActivityIndicator IsRunning="{Binding IsLoading}"
-                           IsVisible="{Binding IsLoading}" />
+                <Label Grid.Column="1"
+                       Text="🚨"
+                       FontSize="34"
+                       VerticalOptions="Center" />
 
-        <CollectionView ItemsSource="{Binding PendingTasks}"
-                        SelectionMode="None">
-            <CollectionView.EmptyView>
-                <Label Text="No hay tareas pendientes."
-                       HorizontalOptions="Center" />
-            </CollectionView.EmptyView>
+                <Label Grid.Row="1"
+                       Text="Revisa lo urgente primero"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light=#424242, Dark=#E0E0E0}" />
 
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Grid Padding="12"
-                          ColumnDefinitions="Auto,*"
-                          RowDefinitions="Auto,Auto"
-                          ColumnSpacing="12"
-                          RowSpacing="4">
-                        <CheckBox Grid.RowSpan="2"
-                                  IsChecked="{Binding IsCompleted}"
-                                  Command="{Binding Source={x:Reference MainPageRoot}, Path=BindingContext.CompleteTaskCommand}"
-                                  CommandParameter="{Binding .}" />
+                <Label Grid.Row="2"
+                       Text="{Binding CurrentTimeText}"
+                       FontSize="16"
+                       TextColor="{AppThemeBinding Light=#616161, Dark=#BDBDBD}" />
+            </Grid>
+        </Border>
 
-                        <Label Grid.Column="1"
-                               Text="{Binding Title}"
-                               FontAttributes="Bold"
-                               LineBreakMode="TailTruncation" />
+        <RefreshView Grid.Row="1"
+                     Command="{Binding RefreshCommand}"
+                     IsRefreshing="{Binding IsLoading, Mode=OneWay}">
+            <ScrollView>
+                <VerticalStackLayout Spacing="18">
+                    <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                       IsVisible="{Binding IsLoading}" />
 
-                        <Label Grid.Row="1"
-                               Grid.Column="1"
-                               Text="{Binding DueAt, StringFormat='Vence: {0}'}"
-                               FontSize="12"
-                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </VerticalStackLayout>
+                    <Border IsVisible="{Binding HasNoUrgentTasks}"
+                            StrokeThickness="0"
+                            BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#12351A}"
+                            Padding="20">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="22" />
+                        </Border.StrokeShape>
+
+                        <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                            <Label Text="✅"
+                                   FontSize="42"
+                                   HorizontalTextAlignment="Center" />
+                            <Label Text="Sin tareas vencidas"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   HorizontalTextAlignment="Center" />
+                            <Label Text="Mantén el foco en lo próximo."
+                                   FontSize="17"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{AppThemeBinding Light=#2E7D32, Dark=#C8E6C9}" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border x:Name="OverdueSectionBorder"
+                            IsVisible="{Binding HasOverdueTasks}"
+                            Stroke="{AppThemeBinding Light={StaticResource OverdueBorderLight}, Dark={StaticResource OverdueBorderDark}}"
+                            StrokeThickness="3"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource OverdueBackgroundLight}, Dark={StaticResource OverdueBackgroundDark}}"
+                            Padding="16">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="24" />
+                        </Border.StrokeShape>
+
+                        <VerticalStackLayout Spacing="14">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                <Label Text="🔴"
+                                       FontSize="30"
+                                       VerticalOptions="Center" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                    <Label Text="{Binding OverdueTitle}"
+                                           FontSize="26"
+                                           FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light={StaticResource OverdueTextLight}, Dark={StaticResource OverdueTextDark}}"
+                                           SemanticProperties.HeadingLevel="Level2" />
+                                    <Label Text="Necesitan atención ahora"
+                                           FontSize="17"
+                                           TextColor="{AppThemeBinding Light={StaticResource OverdueTextLight}, Dark={StaticResource OverdueTextDark}}" />
+                                </VerticalStackLayout>
+                            </Grid>
+
+                            <VerticalStackLayout Spacing="12"
+                                                 BindableLayout.ItemsSource="{Binding OverdueTasks}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Stroke="{AppThemeBinding Light={StaticResource OverdueBorderLight}, Dark={StaticResource OverdueBorderDark}}"
+                                                StrokeThickness="3"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource CardSurfaceLight}, Dark={StaticResource CardSurfaceDark}}"
+                                                Padding="16"
+                                                SemanticProperties.Description="Tarea vencida">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="22" />
+                                            </Border.StrokeShape>
+
+                                            <VerticalStackLayout Spacing="12">
+                                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                                    <Label Text="{Binding AttentionIcon}"
+                                                           FontSize="34"
+                                                           VerticalOptions="Start" />
+                                                    <VerticalStackLayout Grid.Column="1" Spacing="3">
+                                                        <Label Text="{Binding Title}"
+                                                               FontSize="24"
+                                                               FontAttributes="Bold"
+                                                               LineBreakMode="WordWrap" />
+                                                        <Label Text="{Binding RelativeTimeText}"
+                                                               FontSize="18"
+                                                               FontAttributes="Bold"
+                                                               TextColor="{AppThemeBinding Light={StaticResource OverdueTextLight}, Dark={StaticResource OverdueTextDark}}" />
+                                                        <Label Text="{Binding DueAtText, StringFormat='Venció: {0}'}"
+                                                               FontSize="15"
+                                                               TextColor="{AppThemeBinding Light=#616161, Dark=#BDBDBD}" />
+                                                    </VerticalStackLayout>
+                                                </Grid>
+
+                                                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                                                    <Button Text="Completar"
+                                                            MinimumHeightRequest="54"
+                                                            FontAttributes="Bold"
+                                                            BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryActionLight}, Dark={StaticResource PrimaryActionDark}}"
+                                                            TextColor="{AppThemeBinding Light=White, Dark=#102014}"
+                                                            Command="{Binding Source={x:Reference MainPageRoot}, Path=BindingContext.CompleteTaskCommand}"
+                                                            CommandParameter="{Binding .}" />
+                                                    <Button Grid.Column="1"
+                                                            Text="Posponer"
+                                                            MinimumHeightRequest="54"
+                                                            FontAttributes="Bold"
+                                                            BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryActionLight}, Dark={StaticResource SecondaryActionDark}}"
+                                                            TextColor="{AppThemeBinding Light=White, Dark=#0B2038}"
+                                                            Command="{Binding Source={x:Reference MainPageRoot}, Path=BindingContext.SnoozeTaskCommand}"
+                                                            CommandParameter="{Binding .}" />
+                                                    <Button Grid.Column="2"
+                                                            Text="Ignorar"
+                                                            MinimumHeightRequest="54"
+                                                            FontAttributes="Bold"
+                                                            BackgroundColor="{AppThemeBinding Light={StaticResource TemporaryActionLight}, Dark={StaticResource TemporaryActionDark}}"
+                                                            TextColor="{AppThemeBinding Light=White, Dark=#202020}"
+                                                            Command="{Binding Source={x:Reference MainPageRoot}, Path=BindingContext.IgnoreTaskCommand}"
+                                                            CommandParameter="{Binding .}" />
+                                                </Grid>
+                                            </VerticalStackLayout>
+                                        </Border>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border IsVisible="{Binding HasDueSoonTasks}"
+                            Stroke="{AppThemeBinding Light={StaticResource DueSoonBorderLight}, Dark={StaticResource DueSoonBorderDark}}"
+                            StrokeThickness="3"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource DueSoonBackgroundLight}, Dark={StaticResource DueSoonBackgroundDark}}"
+                            Padding="16">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="24" />
+                        </Border.StrokeShape>
+
+                        <VerticalStackLayout Spacing="14">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                <Label Text="🟠"
+                                       FontSize="30"
+                                       VerticalOptions="Center" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                    <Label Text="{Binding DueSoonTitle}"
+                                           FontSize="24"
+                                           FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light=#8A4B00, Dark=#FFE0A3}"
+                                           SemanticProperties.HeadingLevel="Level2" />
+                                    <Label Text="{Binding DueSoonSubtitle}"
+                                           FontSize="17"
+                                           TextColor="{AppThemeBinding Light=#8A4B00, Dark=#FFE0A3}" />
+                                </VerticalStackLayout>
+                            </Grid>
+
+                            <VerticalStackLayout Spacing="12"
+                                                 BindableLayout.ItemsSource="{Binding DueSoonTasks}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Stroke="{AppThemeBinding Light={StaticResource DueSoonBorderLight}, Dark={StaticResource DueSoonBorderDark}}"
+                                                StrokeThickness="3"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource CardSurfaceLight}, Dark={StaticResource CardSurfaceDark}}"
+                                                Padding="16"
+                                                SemanticProperties.Description="Tarea a punto de vencer">
+                                            <Border.Triggers>
+                                                <DataTrigger TargetType="Border"
+                                                             Binding="{Binding IsDueInLessThan15Minutes}"
+                                                             Value="True">
+                                                    <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource CriticalSoonBorderLight}, Dark={StaticResource CriticalSoonBorderDark}}" />
+                                                </DataTrigger>
+                                            </Border.Triggers>
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="22" />
+                                            </Border.StrokeShape>
+
+                                            <VerticalStackLayout Spacing="12">
+                                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                                    <Label Text="{Binding AttentionIcon}"
+                                                           FontSize="34"
+                                                           VerticalOptions="Start" />
+                                                    <VerticalStackLayout Grid.Column="1" Spacing="3">
+                                                        <Label Text="{Binding Title}"
+                                                               FontSize="23"
+                                                               FontAttributes="Bold"
+                                                               LineBreakMode="WordWrap" />
+                                                        <Label Text="{Binding RelativeTimeText}"
+                                                               FontSize="18"
+                                                               FontAttributes="Bold"
+                                                               TextColor="{AppThemeBinding Light=#8A4B00, Dark=#FFE0A3}" />
+                                                        <Label Text="{Binding DueAtText, StringFormat='Vence: {0}'}"
+                                                               FontSize="15"
+                                                               TextColor="{AppThemeBinding Light=#616161, Dark=#BDBDBD}" />
+                                                    </VerticalStackLayout>
+                                                </Grid>
+
+                                                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                                                    <Button Text="Completar"
+                                                            MinimumHeightRequest="54"
+                                                            FontAttributes="Bold"
+                                                            BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryActionLight}, Dark={StaticResource PrimaryActionDark}}"
+                                                            TextColor="{AppThemeBinding Light=White, Dark=#102014}"
+                                                            Command="{Binding Source={x:Reference MainPageRoot}, Path=BindingContext.CompleteTaskCommand}"
+                                                            CommandParameter="{Binding .}" />
+                                                    <Button Grid.Column="1"
+                                                            Text="Posponer"
+                                                            MinimumHeightRequest="54"
+                                                            FontAttributes="Bold"
+                                                            BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryActionLight}, Dark={StaticResource SecondaryActionDark}}"
+                                                            TextColor="{AppThemeBinding Light=White, Dark=#0B2038}"
+                                                            Command="{Binding Source={x:Reference MainPageRoot}, Path=BindingContext.SnoozeTaskCommand}"
+                                                            CommandParameter="{Binding .}" />
+                                                </Grid>
+                                            </VerticalStackLayout>
+                                        </Border>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </ScrollView>
+        </RefreshView>
+    </Grid>
 
 </ContentPage>

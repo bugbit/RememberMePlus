@@ -7,4 +7,5 @@ public sealed class TaskItemRecord
     public string Title { get; init; } = string.Empty;
 
     public string DateDueAt { get; init; } = string.Empty;
+
 }

@@ -58,7 +58,6 @@ CREATE TABLE Task (
     title TEXT NOT NULL,
     description TEXT,
     id_task_group INTEGER,
-    is_insistent INTEGER NOT NULL, -- boolean (0/1)
     datetime_create TEXT,
     date_due_at TEXT NOT NULL,
     date_due_at_last TEXT,
