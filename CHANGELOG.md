@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.4.1] - 2026-05-08
+### Changed
+- La pantalla `Añadir tarea` adopta el estilo visual de la pantalla principal con fondo cálido, cabecera destacada y formulario en tarjeta.
+- Incrementada la versión de la aplicación a `1.4.1` (`ApplicationVersion` 24).
+
 ## [1.4.0] - 2026-05-08
 ### Added
 - Añadida pantalla principal de atención con secciones separadas para tareas vencidas y tareas a punto de vencer.

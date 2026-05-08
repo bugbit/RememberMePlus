@@ -2,28 +2,122 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="RememberMePlusApp.AddTaskPage"
-             Title="Añadir tarea">
+             Title="Añadir tarea"
+             BackgroundColor="{AppThemeBinding Light=#FFF7ED, Dark=#111827}">
 
-    <VerticalStackLayout Padding="24" Spacing="16">
-        <Label Text="Añadir tarea"
-               Style="{StaticResource Headline}"
-               SemanticProperties.HeadingLevel="Level1" />
+    <ContentPage.Resources>
+        <Style x:Key="FieldLabel" TargetType="Label">
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light=#111827, Dark=#F9FAFB}" />
+        </Style>
 
-        <Label Text="Provisional: esta pantalla crea solo tareas no recurrentes."
-               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+        <Style x:Key="FormInput" TargetType="Entry">
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light=#111827, Dark=#F9FAFB}" />
+            <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}" />
+        </Style>
 
-        <Entry Placeholder="Título"
-               Text="{Binding Title}" />
+        <Style x:Key="PrimaryActionButton" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="#7F1D1D" />
+            <Setter Property="CornerRadius" Value="16" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="MinimumHeightRequest" Value="56" />
+            <Setter Property="Padding" Value="16,12" />
+            <Setter Property="TextColor" Value="White" />
+        </Style>
+    </ContentPage.Resources>
 
-        <DatePicker Date="{Binding DueDate}" />
+    <ScrollView>
+        <VerticalStackLayout Padding="20,16,20,32" Spacing="18">
+            <Border StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light=#7F1D1D, Dark=#450A0A}"
+                    StrokeShape="RoundRectangle 28"
+                    Padding="20">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Añadir tarea"
+                           FontAttributes="Bold"
+                           FontSize="30"
+                           TextColor="White"
+                           SemanticProperties.HeadingLevel="Level1" />
 
-        <TimePicker Time="{Binding DueTime}" />
+                    <Label Text="Crea un recordatorio local con fecha y hora de vencimiento."
+                           FontSize="17"
+                           TextColor="#FEE2E2" />
 
-        <Button Text="Guardar tarea"
-                Command="{Binding SaveCommand}" />
+                    <Border StrokeThickness="0"
+                            BackgroundColor="#FEE2E2"
+                            StrokeShape="RoundRectangle 20"
+                            Padding="14">
+                        <Label Text="Alta no recurrente"
+                               FontAttributes="Bold"
+                               FontSize="15"
+                               TextColor="#7F1D1D" />
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
 
-        <ActivityIndicator IsRunning="{Binding IsSaving}"
-                           IsVisible="{Binding IsSaving}" />
-    </VerticalStackLayout>
+            <Border StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark=#1F2937}"
+                    StrokeShape="RoundRectangle 24"
+                    Padding="18">
+                <VerticalStackLayout Spacing="16">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Título"
+                               Style="{StaticResource FieldLabel}" />
+                        <Border Stroke="{AppThemeBinding Light=#FED7AA, Dark=#374151}"
+                                StrokeThickness="1"
+                                BackgroundColor="{AppThemeBinding Light=#FFF7ED, Dark=#111827}"
+                                StrokeShape="RoundRectangle 16"
+                                Padding="12,4">
+                            <Entry Placeholder="Ej. Revisar medicación"
+                                   Text="{Binding Title}"
+                                   Style="{StaticResource FormInput}" />
+                        </Border>
+                    </VerticalStackLayout>
 
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="12">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Fecha"
+                                   Style="{StaticResource FieldLabel}" />
+                            <Border Stroke="{AppThemeBinding Light=#FED7AA, Dark=#374151}"
+                                    StrokeThickness="1"
+                                    BackgroundColor="{AppThemeBinding Light=#FFF7ED, Dark=#111827}"
+                                    StrokeShape="RoundRectangle 16"
+                                    Padding="12,4">
+                                <DatePicker Date="{Binding DueDate}"
+                                            BackgroundColor="Transparent"
+                                            TextColor="{AppThemeBinding Light=#111827, Dark=#F9FAFB}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1"
+                                             Spacing="6">
+                            <Label Text="Hora"
+                                   Style="{StaticResource FieldLabel}" />
+                            <Border Stroke="{AppThemeBinding Light=#FED7AA, Dark=#374151}"
+                                    StrokeThickness="1"
+                                    BackgroundColor="{AppThemeBinding Light=#FFF7ED, Dark=#111827}"
+                                    StrokeShape="RoundRectangle 16"
+                                    Padding="12,4">
+                                <TimePicker Time="{Binding DueTime}"
+                                            BackgroundColor="Transparent"
+                                            TextColor="{AppThemeBinding Light=#111827, Dark=#F9FAFB}" />
+                            </Border>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Button Text="Guardar tarea"
+                            Command="{Binding SaveCommand}"
+                            Style="{StaticResource PrimaryActionButton}" />
+
+                    <ActivityIndicator IsRunning="{Binding IsSaving}"
+                                       IsVisible="{Binding IsSaving}"
+                                       Color="#7F1D1D" />
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
