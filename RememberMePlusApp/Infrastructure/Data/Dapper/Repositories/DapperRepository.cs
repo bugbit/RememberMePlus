@@ -1,6 +1,8 @@
-namespace RememberMePlusApp.Infrastructure.Data;
+using RememberMePlusApp.Domain.App;
 
-public sealed class AppRepository : IAppRepository
+namespace RememberMePlusApp.Infrastructure.Data.Dapper.Repositories;
+
+public sealed class DapperRepository : IAppRepository
 {
     /// <summary>
     /// Obtiene el primer registro de la tabla App.

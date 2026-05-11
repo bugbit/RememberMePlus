@@ -92,7 +92,7 @@ Capa central donde reside la lógica funcional del sistema.
 * reglas de vencimiento y posposición
 * exclusión de tareas desactivadas del ciclo de notificación y scheduler
 * reactivación de tareas con fecha/hora efectiva indicada por el usuario
-* estrategia de notificación reforzada para tareas importantes
+* estrategia de notificación reforazada para tareas importantes
 * resolución de minutos de posposición a nivel global o por tarea
 * modificación de minutos de posposición desde la propia notificación, persistiendo el cambio en la tarea
 * asociación de tareas a eventos del día y resolución de recordatorios relativos al evento
@@ -112,42 +112,6 @@ Capa encargada de la persistencia y de los servicios de plataforma.
 * integración con notificaciones locales del dispositivo
 * uso exclusivo de recursos locales en tiempo de ejecución
 * gestión de recursos de localización para interfaz y notificaciones
-
----
-
-## 📁 Estructura de directorios
-
-```bash
-.
-├── .github
-│   └── workflows
-│       └── dotnet.yml
-├── RememberMePlus
-│   ├── App.xaml
-│   ├── App.xaml.cs
-│   ├── MainPage.xaml
-│   ├── MainPage.xaml.cs
-│   ├── Services
-│   │   ├── INotificationService.cs
-│   │   └── NotificationService.cs
-│   ├── ViewModels
-│   │   ├── BaseViewModel.cs
-│   │   ├── MainPageViewModel.cs
-│   │   └── TaskPageViewModel.cs
-│   └── Views
-│       ├── BasePage.xaml
-│       ├── BasePage.xaml.cs
-│       ├── MainPage.xaml
-│       ├── MainPage.xaml.cs
-│       ├── TaskDetailPage.xaml
-│       └── TaskDetailPage.xaml.cs
-├── RememberMePlus.Android
-│   ├── AndroidManifest.xml
-│   ├── MainActivity.cs
-│   └── Properties
-│       └── launchSettings.json
-└── RememberMePlus.sln
-```
 
 ---
 
@@ -372,45 +336,61 @@ RememberMePlus/
     ├── AppShell.xaml / AppShell.xaml.cs         # Shell de navegación
     ├── MainPage.xaml / MainPage.xaml.cs         # Página principal (legacy)
     ├── AddTaskPage.xaml / AddTaskPage.xaml.cs   # Página de alta de tarea (legacy)
-    ├── Domain/                                  # Capa de dominio (sin dependencias de infraestructura)
+    ├── AlarmAlertPage.xaml.cs
+    ├── AlarmAlertCoordinator.cs
+    ├── MauiServiceProvider.cs
+    ├── Domain/                                  # Capa de dominio
+    │   ├── App/
+    │   │   └── AppRecord.cs
     │   └── Tasks/
     │       ├── ReminderTask.cs
     │       ├── ReminderTaskId.cs
     │       ├── ReminderTitle.cs
     │       ├── ReminderPriority.cs
     │       └── PostponeMinutes.cs
-    ├── Application/                             # Capa de aplicación / casos de uso
-    │   └── Tasks/
-    │       └── IReminderTaskRepository.cs
-    ├── Infrastructure/                          # Capa de infraestructura (SQLite + Dapper)
+    ├── Application/                             # Capa de aplicación
+    │   └── Alarms/
+    │       ├── AlarmActionService.cs
+    │       ├── AlarmStartupService.cs
+    │       ├── AlarmTriggerHandler.cs
+    │       ├── DateTimeExtensions.cs
+    │       ├── IAlarmAlertCoordinator.cs
+    │       ├── IAlarmNotificationService.cs
+    │       ├── IAlarmScheduler.cs
+    │       ├── IAlarmStartupService.cs
+    │       ├── IAlarmTriggerHandler.cs
+    │       └── ScheduledReminderTask.cs
+    ├── Infrastructure/                          # Capa de infraestructura (SQLite + Dapper + Alarmas)
     │   ├── DependencyInjection.cs
-    │   ├── Data/
-    │   │   ├── Abstractions/
-    │   │   │   ├── IDatabaseInitializer.cs
-    │   │   │   └── IDbConnectionFactory.cs
-    │   │   ├── Options/
-    │   │   │   └── SqliteDataOptions.cs
-    │   │   └── Dapper/
-    │   │       ├── AppRecord.cs
-    │   │       ├── AppRepository.cs
-    │   │       ├── DatabaseSchemaRepository.cs
-    │   │       ├── IAppRepository.cs
-    │   │       ├── IDatabaseSchemaRepository.cs
-    │   │       ├── ISqlExecutor.cs
-    │   │       ├── ITaskRepository.cs
-    │   │       ├── IUnitOfWork.cs
-    │   │       ├── IUnitOfWorkFactory.cs
-    │   │       ├── SqliteDbConnectionFactory.cs
-    │   │       ├── UnitOfWork.cs
-    │   │       ├── UnitOfWorkFactory.cs
-    │   │       ├── Mappers/
-    │   │       │   └── ReminderTaskDataMapper.cs
-    │   │       ├── Models/
-    │   │       │   └── ReminderTaskDataModel.cs
-    │   │       ├── Repositories/
-    │   │       │   └── DapperReminderTaskRepository.cs
-    │   │       └── Schema/
-    │   │           └── SqliteDatabaseInitializer.cs
+    │   ├── Alarms/
+    │   │   ├── MauiAlarmNotificationService.cs
+    │   │   └── TimerAlarmScheduler.cs
+    │   └── Data/
+    │       ├── Abstractions/
+    │       │   ├── IDatabaseInitializer.cs
+    │       │   └── IDbConnectionFactory.cs
+    │       ├── Options/
+    │       │   └── SqliteDataOptions.cs
+    │       ├── Dapper/
+    │       │   ├── Mappers/
+    │       │   │   └── ReminderTaskDataMapper.cs
+    │       │   ├── Models/
+    │       │   │   └── ReminderTaskDataModel.cs
+    │       │   ├── Repositories/
+    │       │   │   ├── DapperDatabaseSchemaRepository.cs
+    │       │   │   ├── DapperReminderTaskRepository.cs
+    │       │   │   └── DapperRepository.cs
+    │       │   ├── Schema/
+    │       │   │   └── SqliteDatabaseInitializer.cs
+    │       │   ├── SqliteDbConnectionFactory.cs
+    │       │   ├── UnitOfWork.cs
+    │       │   └── UnitOfWorkFactory.cs
+    │       ├── IAppRepository.cs
+    │       ├── IDatabaseSchemaRepository.cs
+    │       ├── ISqlExecutor.cs
+    │       ├── ITaskRepository.cs
+    │       ├── IUnitOfWork.cs
+    │       └── IUnitOfWorkFactory.cs
     ├── Presentation/                            # Capa de presentación (MVVM)
     │   ├── Pages/
     │   │   └── MainPage.xaml / MainPage.xaml.cs
@@ -436,6 +416,7 @@ RememberMePlus/
     │       └── Styles.xaml
     ├── Platforms/
     │   ├── Android/
+    │   │   └── Alarms/
     │   ├── iOS/
     │   ├── MacCatalyst/
     │   └── Windows/

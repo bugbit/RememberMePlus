@@ -1,3 +1,5 @@
+using RememberMePlusApp.Domain.App;
+
 namespace RememberMePlusApp.Infrastructure.Data;
 
 public interface IAppRepository

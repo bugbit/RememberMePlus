@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RememberMePlusApp.Application.Alarms;
 using RememberMePlusApp.Infrastructure.Alarms;
 using RememberMePlusApp.Infrastructure.Data;
+using RememberMePlusApp.Infrastructure.Data.Dapper.Repositories;
 
 namespace RememberMePlusApp.Infrastructure;
 
@@ -11,10 +12,10 @@ public static class DependencyInjection
     {
         services.AddSingleton<IDbConnectionFactory, SqliteDbConnectionFactory>();
         services.AddSingleton<IUnitOfWorkFactory, UnitOfWorkFactory>();
-        services.AddSingleton<IAppRepository, AppRepository>();
+        services.AddSingleton<IAppRepository, DapperRepository>();
         services.AddSingleton<ITaskRepository, DapperReminderTaskRepository>();
         services.AddSingleton<IDatabaseInitializer, SqliteDatabaseInitializer>();
-        services.AddSingleton<IDatabaseSchemaRepository, DatabaseSchemaRepository>();
+        services.AddSingleton<IDatabaseSchemaRepository, DapperDatabaseSchemaRepository>();
         services.AddSingleton<IAlarmStartupService, AlarmStartupService>();
         services.AddSingleton<IAlarmTriggerHandler, AlarmTriggerHandler>();
         services.AddSingleton<IAlarmActionService, AlarmActionService>();

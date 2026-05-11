@@ -1,14 +1,15 @@
 using Microsoft.Extensions.Logging;
+using RememberMePlusApp.Domain.App;
 using System.Reflection;
 
-namespace RememberMePlusApp.Infrastructure.Data;
+namespace RememberMePlusApp.Infrastructure.Data.Dapper.Repositories;
 
-public sealed class DatabaseSchemaRepository(
+public sealed class DapperDatabaseSchemaRepository(
     IAppRepository appRepository,
-    ILogger<DatabaseSchemaRepository> logger) : IDatabaseSchemaRepository
+    ILogger<DapperDatabaseSchemaRepository> logger) : IDatabaseSchemaRepository
 {
     private readonly IAppRepository _appRepository = appRepository;
-    private readonly ILogger<DatabaseSchemaRepository> _logger = logger;
+    private readonly ILogger<DapperDatabaseSchemaRepository> _logger = logger;
 
     public async Task CreateOrUpdateDatabaseAsync(IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
     {

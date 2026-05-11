@@ -1,4 +1,4 @@
-namespace RememberMePlusApp.Infrastructure.Data;
+namespace RememberMePlusApp.Domain.App;
 
 public sealed record AppRecord(
     long IdApp,
