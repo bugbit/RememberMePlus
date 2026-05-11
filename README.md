@@ -5,6 +5,7 @@
 * [🧠 Descripción](#-descripción)
 * [🚀 Objetivos del proyecto](#-objetivos-del-proyecto)
 * [🏗️ Arquitectura](#️-arquitectura)
+* [📁 Estructura de directorios](#-estructura-de-directorios)
 * [🧩 Tecnologías previstas](#-tecnologías-previstas)
 * [🔄 Flujo completo](#-flujo-completo)
 * [⏸️ Política de posposición](#️-política-de-posposición)
@@ -111,6 +112,42 @@ Capa encargada de la persistencia y de los servicios de plataforma.
 * integración con notificaciones locales del dispositivo
 * uso exclusivo de recursos locales en tiempo de ejecución
 * gestión de recursos de localización para interfaz y notificaciones
+
+---
+
+## 📁 Estructura de directorios
+
+```bash
+.
+├── .github
+│   └── workflows
+│       └── dotnet.yml
+├── RememberMePlus
+│   ├── App.xaml
+│   ├── App.xaml.cs
+│   ├── MainPage.xaml
+│   ├── MainPage.xaml.cs
+│   ├── Services
+│   │   ├── INotificationService.cs
+│   │   └── NotificationService.cs
+│   ├── ViewModels
+│   │   ├── BaseViewModel.cs
+│   │   ├── MainPageViewModel.cs
+│   │   └── TaskPageViewModel.cs
+│   └── Views
+│       ├── BasePage.xaml
+│       ├── BasePage.xaml.cs
+│       ├── MainPage.xaml
+│       ├── MainPage.xaml.cs
+│       ├── TaskDetailPage.xaml
+│       └── TaskDetailPage.xaml.cs
+├── RememberMePlus.Android
+│   ├── AndroidManifest.xml
+│   ├── MainActivity.cs
+│   └── Properties
+│       └── launchSettings.json
+└── RememberMePlus.sln
+```
 
 ---
 
@@ -307,6 +344,106 @@ Una vez arrancada la app:
 * comprobar que una tarea puede quedar asociada a un evento como desayuno, comida o cena
 * comprobar que una tarea puede activarse o desactivarse manualmente cuando se quiera
 * comprobar que al activar una tarea se solicita desde cuándo debe volver a estar activa
+
+## 📁 Estructura de directorios
+
+```
+RememberMePlus/
+├── RememberMePlus.slnx                          # Solución
+├── README.md
+├── LICENSE
+├── .gitignore
+├── Remembermeplus_v1.db                         # Base de datos local SQLite
+├── context/                                     # Contexto de diseño
+│   └── database.sql
+├── docs/                                        # Documentación de cambios
+│   ├── add-domain-and-dapper-infrastructure.md
+│   ├── restyle-add-task-page-like-main.md
+│   ├── run-database-initializer-at-startup.md
+│   ├── store-database-version-in-initializer-state.md
+│   ├── update-mainpage-pending-tasks-checklist.md
+│   ├── update-mainpage-pending-today-or-overdue.md
+│   ├── update-task-complete-recurring-rule.md
+│   └── update-uow-and-sqlexecutor-separation.md
+└── RememberMePlusApp/                           # Proyecto MAUI principal
+    ├── RememberMePlusApp.csproj
+    ├── MauiProgram.cs                           # Configuración DI y MAUI builder
+    ├── App.xaml / App.xaml.cs                   # Punto de entrada de la app
+    ├── AppShell.xaml / AppShell.xaml.cs         # Shell de navegación
+    ├── MainPage.xaml / MainPage.xaml.cs         # Página principal (legacy)
+    ├── AddTaskPage.xaml / AddTaskPage.xaml.cs   # Página de alta de tarea (legacy)
+    ├── Domain/                                  # Capa de dominio (sin dependencias de infraestructura)
+    │   └── Tasks/
+    │       ├── ReminderTask.cs
+    │       ├── ReminderTaskId.cs
+    │       ├── ReminderTitle.cs
+    │       ├── ReminderPriority.cs
+    │       └── PostponeMinutes.cs
+    ├── Application/                             # Capa de aplicación / casos de uso
+    │   └── Tasks/
+    │       └── IReminderTaskRepository.cs
+    ├── Infrastructure/                          # Capa de infraestructura (SQLite + Dapper)
+    │   ├── DependencyInjection.cs
+    │   ├── Data/
+    │   │   ├── Abstractions/
+    │   │   │   ├── IDatabaseInitializer.cs
+    │   │   │   └── IDbConnectionFactory.cs
+    │   │   ├── Options/
+    │   │   │   └── SqliteDataOptions.cs
+    │   │   └── Dapper/
+    │   │       ├── AppRecord.cs
+    │   │       ├── AppRepository.cs
+    │   │       ├── DatabaseSchemaRepository.cs
+    │   │       ├── IAppRepository.cs
+    │   │       ├── IDatabaseSchemaRepository.cs
+    │   │       ├── ISqlExecutor.cs
+    │   │       ├── ITaskRepository.cs
+    │   │       ├── IUnitOfWork.cs
+    │   │       ├── IUnitOfWorkFactory.cs
+    │   │       ├── SqliteDbConnectionFactory.cs
+    │   │       ├── UnitOfWork.cs
+    │   │       ├── UnitOfWorkFactory.cs
+    │   │       ├── Mappers/
+    │   │       │   └── ReminderTaskDataMapper.cs
+    │   │       ├── Models/
+    │   │       │   └── ReminderTaskDataModel.cs
+    │   │       ├── Repositories/
+    │   │       │   └── DapperReminderTaskRepository.cs
+    │   │       └── Schema/
+    │   │           └── SqliteDatabaseInitializer.cs
+    ├── Presentation/                            # Capa de presentación (MVVM)
+    │   ├── Pages/
+    │   │   └── MainPage.xaml / MainPage.xaml.cs
+    │   ├── Shell/
+    │   │   └── AppShell.xaml / AppShell.xaml.cs
+    │   └── ViewModels/
+    │       └── HomeViewModel.cs
+    ├── ViewModels/                              # ViewModels adicionales
+    │   ├── MainPageViewModel.cs
+    │   └── AddTaskPageViewModel.cs
+    ├── Resources/
+    │   ├── AppIcon/
+    │   ├── Fonts/
+    │   │   ├── OpenSans-Regular.ttf
+    │   │   └── OpenSans-Semibold.ttf
+    │   ├── Images/
+    │   ├── Raw/
+    │   ├── Scripts/
+    │   │   └── database-v1.sql                 # Script de inicialización de BD
+    │   ├── Splash/
+    │   └── Styles/
+    │       ├── Colors.xaml
+    │       └── Styles.xaml
+    ├── Platforms/
+    │   ├── Android/
+    │   ├── iOS/
+    │   ├── MacCatalyst/
+    │   └── Windows/
+    └── Properties/
+        └── launchSettings.json
+```
+
+---
 
 ## 📌 Principios de diseño
 
