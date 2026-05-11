@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RememberMePlusApp.AlarmAlertPage"
+             Title="Tarea vencida"
+             BackgroundColor="#7F1D1D">
+    <Grid Padding="24">
+        <Border Stroke="#FCA5A5"
+                StrokeThickness="2"
+                BackgroundColor="#FEE2E2"
+                StrokeShape="RoundRectangle 28"
+                Padding="24"
+                VerticalOptions="Center">
+            <VerticalStackLayout Spacing="18">
+                <Label Text="🚨"
+                       FontSize="52"
+                       HorizontalOptions="Center" />
+                <Label Text="Tarea vencida"
+                       FontSize="26"
+                       FontAttributes="Bold"
+                       TextColor="#7F1D1D"
+                       HorizontalTextAlignment="Center" />
+                <Label x:Name="TaskTitleLabel"
+                       FontSize="21"
+                       FontAttributes="Bold"
+                       TextColor="#111827"
+                       HorizontalTextAlignment="Center" />
+                <Label x:Name="SnoozeInfoLabel"
+                       FontSize="16"
+                       TextColor="#7F1D1D"
+                       HorizontalTextAlignment="Center" />
+                <Button Text="Completar"
+                        Clicked="OnCompleteClicked"
+                        BackgroundColor="#16A34A"
+                        TextColor="White"
+                        FontAttributes="Bold" />
+                <Button x:Name="SnoozeButton"
+                        Clicked="OnSnoozeClicked"
+                        BackgroundColor="#F97316"
+                        TextColor="White"
+                        FontAttributes="Bold" />
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

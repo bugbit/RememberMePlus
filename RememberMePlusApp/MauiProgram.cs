@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using RememberMePlusApp.Application.Alarms;
 using RememberMePlusApp.Infrastructure;
 using RememberMePlusApp.ViewModels;
 
@@ -23,6 +24,7 @@ namespace RememberMePlusApp
             builder.Services.AddTransient<AddTaskPageViewModel>();
             builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<AddTaskPage>();
+            builder.Services.AddSingleton<IAlarmAlertCoordinator, AlarmAlertCoordinator>();
             builder.Services.AddSingleton<App>();
 
 #if DEBUG
@@ -30,7 +32,10 @@ namespace RememberMePlusApp
             builder.Logging.SetMinimumLevel(LogLevel.Debug);
 #endif
 
-            return builder.Build();
+            var app = builder.Build();
+            MauiServiceProvider.Initialize(app.Services);
+
+            return app;
         }
     }
 }
