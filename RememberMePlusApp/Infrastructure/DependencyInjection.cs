@@ -26,3 +26,8 @@ public static class DependencyInjection
         return services;
     }
 }
+
+public sealed class SqliteDataOptions
+{
+  public required string DatabasePath { get; set; }
+}
