@@ -1,8 +1,10 @@
+using RememberMePlusApp.Domain.Tasks;
+
 namespace RememberMePlusApp.Infrastructure.Data;
 
-public sealed class TaskRepository : ITaskRepository
+public sealed class DapperReminderTaskRepository : ITaskRepository
 {
-    public async Task<IReadOnlyList<TaskItemRecord>> GetPendingTodayOrOverdueAsync(IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<ReminderTask>> GetPendingTodayOrOverdueAsync(IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
     {
         if (unitOfWork is not ISqlExecutor sqlExecutor)
         {
@@ -13,19 +15,21 @@ public sealed class TaskRepository : ITaskRepository
             SELECT
                 id_task AS IdTask,
                 title AS Title,
-                date_due_at AS DateDueAt
+                date_due_at AS DateDueAt,
+                is_active AS IsActive,
+                is_insistent AS IsInsistent
             FROM Task
             WHERE is_active = 1
               AND date(date_due_at) <= date('now', 'localtime')
             ORDER BY date_due_at ASC;
             """;
 
-        var rows = await sqlExecutor.QueryAsync<TaskItemRecord>(query, cancellationToken: cancellationToken);
+        var rows = await sqlExecutor.QueryAsync<ReminderTaskDataModel>(query, cancellationToken: cancellationToken);
 
-        return rows.ToList();
+        return rows.Select(ReminderTaskDataMapper.ToDomain).ToList();
     }
 
-    public async Task<IReadOnlyList<TaskItemRecord>> GetHomeAttentionTasksAsync(DateTime dueUntil, IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<ReminderTask>> GetHomeAttentionTasksAsync(DateTime dueUntil, IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
     {
         if (unitOfWork is not ISqlExecutor sqlExecutor)
         {
@@ -36,19 +40,21 @@ public sealed class TaskRepository : ITaskRepository
             SELECT
                 id_task AS IdTask,
                 title AS Title,
-                date_due_at AS DateDueAt
+                date_due_at AS DateDueAt,
+                is_active AS IsActive,
+                is_insistent AS IsInsistent
             FROM Task
             WHERE is_active = 1
               AND datetime(date_due_at) <= datetime(@DueUntil)
             ORDER BY date_due_at ASC;
             """;
 
-        var rows = await sqlExecutor.QueryAsync<TaskItemRecord>(
+        var rows = await sqlExecutor.QueryAsync<ReminderTaskDataModel>(
             query,
             new { DueUntil = dueUntil.ToString("yyyy-MM-dd HH:mm:ss") },
             cancellationToken);
 
-        return rows.ToList();
+        return rows.Select(ReminderTaskDataMapper.ToDomain).ToList();
     }
 
     public async Task CompleteAsync(long taskId, IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
