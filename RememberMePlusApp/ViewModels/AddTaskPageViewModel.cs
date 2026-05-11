@@ -1,14 +1,19 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using RememberMePlusApp.Application.Alarms;
 using RememberMePlusApp.Infrastructure.Data;
 
 namespace RememberMePlusApp.ViewModels;
 
-public sealed class AddTaskPageViewModel(IUnitOfWorkFactory unitOfWorkFactory, ITaskRepository taskRepository) : INotifyPropertyChanged
+public sealed class AddTaskPageViewModel(
+    IUnitOfWorkFactory unitOfWorkFactory,
+    ITaskRepository taskRepository,
+    IAlarmStartupService alarmStartupService) : INotifyPropertyChanged
 {
     private readonly IUnitOfWorkFactory _unitOfWorkFactory = unitOfWorkFactory;
     private readonly ITaskRepository _taskRepository = taskRepository;
+    private readonly IAlarmStartupService _alarmStartupService = alarmStartupService;
 
     private string _title = string.Empty;
     private DateTime _dueDate = DateTime.Today;
@@ -98,9 +103,10 @@ public sealed class AddTaskPageViewModel(IUnitOfWorkFactory unitOfWorkFactory, I
         IsSaving = true;
 
         await using var unitOfWork = await _unitOfWorkFactory.CreateAsync();
-        var dueAt = DueDate.Date.Add(DueTime);
+        var dueAt = DueDate.Date.Add(DueTime).TrimToMinute();
         await _taskRepository.AddNonRecurringAsync(Title.Trim(), dueAt, unitOfWork);
         await unitOfWork.CommitAsync();
+        await _alarmStartupService.StartAsync();
 
         Title = string.Empty;
         DueDate = DateTime.Today;

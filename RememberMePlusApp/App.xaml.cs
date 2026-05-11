@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using RememberMePlusApp.Application.Alarms;
 using RememberMePlusApp.Infrastructure.Data;
 
 namespace RememberMePlusApp
@@ -6,10 +6,14 @@ namespace RememberMePlusApp
     public partial class App : Application
     {
         private readonly IDatabaseInitializer _databaseInitializer;
+        private readonly IAlarmStartupService _alarmStartupService;
 
-        public App(IDatabaseInitializer databaseInitializer)
+        public App(
+            IDatabaseInitializer databaseInitializer,
+            IAlarmStartupService alarmStartupService)
         {
             _databaseInitializer = databaseInitializer;
+            _alarmStartupService = alarmStartupService;
             InitializeComponent();
         }
 
@@ -17,6 +21,7 @@ namespace RememberMePlusApp
         {
             base.OnStart();
             await _databaseInitializer.InitializeAsync();
+            await _alarmStartupService.StartAsync();
         }
 
         protected override Window CreateWindow(IActivationState? activationState)

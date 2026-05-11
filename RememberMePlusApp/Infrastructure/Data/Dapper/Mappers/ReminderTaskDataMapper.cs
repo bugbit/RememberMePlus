@@ -1,4 +1,5 @@
 using System.Globalization;
+using RememberMePlusApp.Application.Alarms;
 using RememberMePlusApp.Domain.Tasks;
 
 namespace RememberMePlusApp.Infrastructure.Data;
@@ -15,6 +16,15 @@ public static class ReminderTaskDataMapper
             ParseDueAt(model.DateDueAt),
             model.IsActive == 1,
             model.IsInsistent == 1 ? ReminderPriority.Important : ReminderPriority.Normal);
+    }
+
+    public static ScheduledReminderTask ToScheduledReminder(ReminderTaskDataModel model)
+    {
+        return new ScheduledReminderTask(
+            model.IdTask,
+            model.Title,
+            ParseDueAt(model.DateTimeNotifyAt ?? model.DateDueAt).TrimToMinute(),
+            model.SnoozeMinutes.HasValue ? Convert.ToInt32(model.SnoozeMinutes.Value) : null);
     }
 
     private static DateTime ParseDueAt(string value)

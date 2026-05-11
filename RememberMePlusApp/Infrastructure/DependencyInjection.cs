@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using RememberMePlusApp.Application.Alarms;
+using RememberMePlusApp.Infrastructure.Alarms;
 using RememberMePlusApp.Infrastructure.Data;
 
 namespace RememberMePlusApp.Infrastructure;
@@ -13,6 +15,16 @@ public static class DependencyInjection
         services.AddSingleton<ITaskRepository, DapperReminderTaskRepository>();
         services.AddSingleton<IDatabaseInitializer, SqliteDatabaseInitializer>();
         services.AddSingleton<IDatabaseSchemaRepository, DatabaseSchemaRepository>();
+        services.AddSingleton<IAlarmStartupService, AlarmStartupService>();
+        services.AddSingleton<IAlarmTriggerHandler, AlarmTriggerHandler>();
+        services.AddSingleton<IAlarmActionService, AlarmActionService>();
+#if ANDROID
+        services.AddSingleton<IAlarmScheduler, Platforms.Android.Alarms.AndroidAlarmScheduler>();
+        services.AddSingleton<IAlarmNotificationService, Platforms.Android.Alarms.AndroidAlarmNotificationService>();
+#else
+        services.AddSingleton<IAlarmScheduler, TimerAlarmScheduler>();
+        services.AddSingleton<IAlarmNotificationService, MauiAlarmNotificationService>();
+#endif
 
         return services;
     }

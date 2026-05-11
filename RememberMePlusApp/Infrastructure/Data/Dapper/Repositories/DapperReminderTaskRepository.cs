@@ -1,3 +1,4 @@
+using RememberMePlusApp.Application.Alarms;
 using RememberMePlusApp.Domain.Tasks;
 
 namespace RememberMePlusApp.Infrastructure.Data;
@@ -120,5 +121,83 @@ public sealed class DapperReminderTaskRepository : ITaskRepository
             Title = title,
             DateDueAt = dueDate.ToString("yyyy-MM-dd HH:mm:ss")
         }, cancellationToken);
+    }
+
+    public async Task NormalizeOverdueNotificationsAsync(DateTime notifyAt, IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
+    {
+        if (unitOfWork is not ISqlExecutor sqlExecutor)
+        {
+            return;
+        }
+
+        const string command = """
+            UPDATE Task
+            SET datetime_notify_at = @NotifyAt
+            WHERE is_active = 1
+              AND datetime_notify_at IS NOT NULL
+              AND datetime(datetime_notify_at) < datetime(@NotifyAt);
+            """;
+
+        await sqlExecutor.ExecuteAsync(command, new
+        {
+            NotifyAt = notifyAt.ToString("yyyy-MM-dd HH:mm:ss")
+        }, cancellationToken);
+    }
+
+    public async Task<ScheduledReminderTask?> GetNextToNotifyAsync(IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
+    {
+        if (unitOfWork is not ISqlExecutor sqlExecutor)
+        {
+            return null;
+        }
+
+        const string query = """
+            SELECT
+                id_task AS IdTask,
+                title AS Title,
+                date_due_at AS DateDueAt,
+                datetime_notify_at AS DateTimeNotifyAt,
+                snooze_minutes AS SnoozeMinutes,
+                is_active AS IsActive,
+                is_insistent AS IsInsistent
+            FROM Task
+            WHERE is_active = 1
+              AND datetime_notify_at IS NOT NULL
+            ORDER BY datetime(datetime_notify_at) ASC, id_task ASC
+            LIMIT 1;
+            """;
+
+        var row = await sqlExecutor.QueryFirstOrDefaultAsync<ReminderTaskDataModel>(query, cancellationToken: cancellationToken);
+        return row is null ? null : ReminderTaskDataMapper.ToScheduledReminder(row);
+    }
+
+    public async Task<ScheduledReminderTask?> GetByIdForAlarmAsync(long taskId, IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
+    {
+        if (unitOfWork is not ISqlExecutor sqlExecutor)
+        {
+            return null;
+        }
+
+        const string query = """
+            SELECT
+                id_task AS IdTask,
+                title AS Title,
+                date_due_at AS DateDueAt,
+                datetime_notify_at AS DateTimeNotifyAt,
+                snooze_minutes AS SnoozeMinutes,
+                is_active AS IsActive,
+                is_insistent AS IsInsistent
+            FROM Task
+            WHERE id_task = @TaskId
+              AND is_active = 1
+            LIMIT 1;
+            """;
+
+        var row = await sqlExecutor.QueryFirstOrDefaultAsync<ReminderTaskDataModel>(
+            query,
+            new { TaskId = taskId },
+            cancellationToken);
+
+        return row is null ? null : ReminderTaskDataMapper.ToScheduledReminder(row);
     }
 }

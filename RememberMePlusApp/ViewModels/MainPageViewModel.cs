@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using RememberMePlusApp.Application.Alarms;
 using RememberMePlusApp.Infrastructure.Data;
 
 namespace RememberMePlusApp.ViewModels;
@@ -14,6 +15,7 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
     private readonly IUnitOfWorkFactory _unitOfWorkFactory;
     private readonly ITaskRepository _taskRepository;
     private readonly IAppRepository _appRepository;
+    private readonly IAlarmStartupService _alarmStartupService;
 
     private bool _isLoading;
     private int _relativeOffsetMinutes = 120;
@@ -24,11 +26,13 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
     public MainPageViewModel(
         IUnitOfWorkFactory unitOfWorkFactory,
         ITaskRepository taskRepository,
-        IAppRepository appRepository)
+        IAppRepository appRepository,
+        IAlarmStartupService alarmStartupService)
     {
         _unitOfWorkFactory = unitOfWorkFactory;
         _taskRepository = taskRepository;
         _appRepository = appRepository;
+        _alarmStartupService = alarmStartupService;
 
         CompleteTaskCommand = new Command<HomeTaskItemViewModel>(OnCompleteTask);
         SnoozeTaskCommand = new Command<HomeTaskItemViewModel>(OnSnoozeTask);
@@ -182,6 +186,8 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
         await _taskRepository.CompleteAsync(task.Id, unitOfWork);
         await unitOfWork.CommitAsync();
 
+        await _alarmStartupService.StartAsync();
+
         RemoveTask(task);
     }
 
@@ -192,11 +198,12 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
             return;
         }
 
-        var snoozedDueAt = DateTime.Now.AddMinutes(_snoozeMinutes);
+        var snoozedDueAt = DateTime.Now.TrimToMinute().AddMinutes(_snoozeMinutes);
         await using var unitOfWork = await _unitOfWorkFactory.CreateAsync();
         await _taskRepository.SnoozeAsync(task.Id, snoozedDueAt, unitOfWork);
         await unitOfWork.CommitAsync();
 
+        await _alarmStartupService.StartAsync();
         await LoadAsync();
     }
 

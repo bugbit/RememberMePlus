@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.5.0] - 2026-05-11
+### Added
+- Añadido Alarm Scheduler para programar la próxima tarea activa según `datetime_notify_at` sin considerar segundos.
+- Añadido soporte Android con `AlarmManager`, notificación local sonora y ventana de atención con acciones de completar y posponer.
+- Añadido fallback con `Timer` para entornos no Android.
+
+### Changed
+- El arranque de la aplicación normaliza notificaciones vencidas a la fecha-hora local actual y agenda la siguiente tarea a vencer.
+- Las acciones de completar, posponer y crear tarea recalculan la próxima alarma programada.
+- Incrementada la versión de la aplicación a `1.5.0` (`ApplicationVersion` 26).
+
 ## [1.4.2] - 2026-05-11
 ### Changed
 - Reorganizada la capa de dominio de tareas en `Domain/Tasks` con entidad y value objects de recordatorio.
