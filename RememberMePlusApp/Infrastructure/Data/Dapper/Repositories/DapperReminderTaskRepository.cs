@@ -79,7 +79,7 @@ public sealed class DapperReminderTaskRepository : ITaskRepository
         await sqlExecutor.ExecuteAsync(command, new { TaskId = taskId }, cancellationToken);
     }
 
-    public async Task SnoozeAsync(long taskId, DateTime dueAt, IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
+    public async Task SnoozeAsync(long taskId, DateTime notifyAt, IUnitOfWork unitOfWork, CancellationToken cancellationToken = default)
     {
         if (unitOfWork is not ISqlExecutor sqlExecutor)
         {
@@ -88,9 +88,8 @@ public sealed class DapperReminderTaskRepository : ITaskRepository
 
         const string command = """
             UPDATE Task
-            SET date_due_at_last = date_due_at,
-                date_due_at = @DateDueAt,
-                datetime_notify_at = @DateDueAt
+            SET 
+                datetime_notify_at = @NotifyAt
             WHERE id_task = @TaskId
               AND is_active = 1;
             """;
@@ -98,7 +97,7 @@ public sealed class DapperReminderTaskRepository : ITaskRepository
         await sqlExecutor.ExecuteAsync(command, new
         {
             TaskId = taskId,
-            DateDueAt = dueAt.ToString("yyyy-MM-dd HH:mm:ss")
+            NotifyAt = notifyAt.ToString("yyyy-MM-dd HH:mm:ss")
         }, cancellationToken);
     }
 
