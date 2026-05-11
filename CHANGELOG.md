@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.4.2] - 2026-05-11
+### Changed
+- Reorganizada la capa de dominio de tareas en `Domain/Tasks` con entidad y value objects de recordatorio.
+- Reorganizada la infraestructura SQLite/Dapper en carpetas de abstracciones, opciones, modelos, mappers, repositorios y esquema.
+- Centralizado el registro de infraestructura en `Infrastructure/DependencyInjection.cs`.
+- Incrementada la versión de la aplicación a `1.4.2` (`ApplicationVersion` 25).
+
 ## [1.4.1] - 2026-05-08
 ### Changed
 - La pantalla `Añadir tarea` adopta el estilo visual de la pantalla principal con fondo cálido, cabecera destacada y formulario en tarjeta.

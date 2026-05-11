@@ -1,8 +1,6 @@
-using Dapper;
-
 namespace RememberMePlusApp.Infrastructure.Data;
 
-public sealed class DatabaseInitializer(
+public sealed class SqliteDatabaseInitializer(
     IUnitOfWorkFactory unitOfWorkFactory,
     IDatabaseSchemaRepository databaseSchemaRepository) : IDatabaseInitializer
 {

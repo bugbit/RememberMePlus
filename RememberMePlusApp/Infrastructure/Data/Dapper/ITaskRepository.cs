@@ -1,10 +1,12 @@
+using RememberMePlusApp.Domain.Tasks;
+
 namespace RememberMePlusApp.Infrastructure.Data;
 
 public interface ITaskRepository
 {
-    Task<IReadOnlyList<TaskItemRecord>> GetPendingTodayOrOverdueAsync(IUnitOfWork unitOfWork, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<ReminderTask>> GetPendingTodayOrOverdueAsync(IUnitOfWork unitOfWork, CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyList<TaskItemRecord>> GetHomeAttentionTasksAsync(DateTime dueUntil, IUnitOfWork unitOfWork, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<ReminderTask>> GetHomeAttentionTasksAsync(DateTime dueUntil, IUnitOfWork unitOfWork, CancellationToken cancellationToken = default);
 
     Task CompleteAsync(long taskId, IUnitOfWork unitOfWork, CancellationToken cancellationToken = default);
 

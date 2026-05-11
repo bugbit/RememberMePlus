@@ -147,13 +147,7 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
 
             foreach (var task in tasks)
             {
-                var dueAt = ParseDueAt(task.DateDueAt);
-                if (dueAt is null)
-                {
-                    continue;
-                }
-
-                var item = HomeTaskItemViewModel.Create(task.IdTask, task.Title, dueAt.Value, now);
+                var item = HomeTaskItemViewModel.Create(task.Id.Value, task.Title.Value, task.DueAt, now);
                 if (item.IsOverdue)
                 {
                     OverdueTasks.Add(item);
@@ -224,17 +218,6 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
         }
 
         NotifyCountersChanged();
-    }
-
-    private static DateTime? ParseDueAt(string dueAt)
-    {
-        string[] formats = ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"];
-        if (DateTime.TryParseExact(dueAt, formats, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var parsed))
-        {
-            return parsed;
-        }
-
-        return DateTime.TryParse(dueAt, DisplayCulture, DateTimeStyles.AssumeLocal, out parsed) ? parsed : null;
     }
 
     private void NotifyCountersChanged()
