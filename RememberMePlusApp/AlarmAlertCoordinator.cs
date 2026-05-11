@@ -10,7 +10,7 @@ public sealed class AlarmAlertCoordinator(IAlarmActionService alarmActionService
     {
         return MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            var page = Application.Current?.Windows.FirstOrDefault()?.Page;
+            var page = Microsoft.Maui.Controls.Application.Current?.Windows.FirstOrDefault()?.Page;
             if (page is null)
             {
                 return;
