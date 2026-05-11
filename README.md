@@ -6,6 +6,7 @@
 * [🚀 Objetivos del proyecto](#-objetivos-del-proyecto)
 * [🏗️ Arquitectura](#️-arquitectura)
 * [🧩 Tecnologías previstas](#-tecnologías-previstas)
+* [📁 Estructura actual](#-estructura-actual)
 * [🔄 Flujo completo](#-flujo-completo)
 * [⏸️ Política de posposición](#️-política-de-posposición)
 * [🚨 Estrategias de notificación](#-estrategias-de-notificación)
@@ -60,11 +61,11 @@ La aplicación está orientada a una experiencia simple y directa, combinando un
 
 ## 🏗️ Arquitectura
 
-La solución se plantea como una aplicación **.NET MAUI en .NET 10**, organizada en capas lógicas para mantener separación de responsabilidades, con **Android como plataforma objetivo en producción**.
+La solución se plantea como una aplicación **.NET MAUI en .NET 10**, organizada en capas lógicas de **Clean Architecture + DDD** para mantener separación de responsabilidades, con **Android como plataforma objetivo en producción**.
 
-### 1. App MAUI
+### 1. Presentation / App MAUI
 
-Aplicación cliente desarrollada con MAUI, con **Android como plataforma objetivo en producción**, responsable de la experiencia de usuario.
+Aplicación cliente desarrollada con MAUI y patrón **MVVM**, con **Android como plataforma objetivo en producción**, responsable de la experiencia de usuario.
 
 **Responsabilidades:**
 
@@ -79,9 +80,9 @@ Aplicación cliente desarrollada con MAUI, con **Android como plataforma objetiv
 * configuración de preferencias del usuario
 * selección del idioma de la interfaz y recursos localizados
 
-### 2. Núcleo de aplicación y dominio
+### 2. Application y Domain
 
-Capa central donde reside la lógica funcional del sistema.
+Capas internas donde residen los contratos de casos de uso y la lógica funcional del sistema.
 
 **Responsabilidades:**
 
@@ -95,18 +96,23 @@ Capa central donde reside la lógica funcional del sistema.
 * resolución de minutos de posposición a nivel global o por tarea
 * modificación de minutos de posposición desde la propia notificación, persistiendo el cambio en la tarea
 * asociación de tareas a eventos del día y resolución de recordatorios relativos al evento
+* contratos de aplicación para persistencia, por ejemplo `IReminderTaskRepository`
 * coordinación entre pantalla principal, mantenimiento y scheduler
 * garantía de funcionamiento autónomo sin dependencias externas en tiempo de ejecución
 * resolución de idioma para interfaz, notificaciones y textos funcionales
 * priorización visual de la tarea notificada frente al resto de tareas pendientes visibles del día
 
-### 3. Infraestructura
+### 3. Infrastructure / Data
 
-Capa encargada de la persistencia y de los servicios de plataforma.
+Capa encargada de la persistencia y de los servicios de plataforma. Las clases específicas de **Dapper** y **SQLite** viven bajo `Infrastructure/Data/Dapper`.
 
 **Responsabilidades:**
 
 * almacenamiento local de tareas, configuración e historial mediante **SQLite**
+* acceso a datos con **Dapper** aislado en infraestructura
+* modelos de datos separados del dominio
+* mapeo entre modelos de persistencia y agregados de dominio
+* inicialización local del esquema de base de datos
 * scheduler local de recordatorios
 * integración con notificaciones locales del dispositivo
 * uso exclusivo de recursos locales en tiempo de ejecución
@@ -122,9 +128,83 @@ Capa encargada de la persistencia y de los servicios de plataforma.
 * **C#**
 * Patrón **MVVM**
 * **SQLite** como base de datos local para tareas, eventos asociados, configuración e historial
+* **Dapper** como micro ORM para acceso a datos local, aislado en `Infrastructure/Data/Dapper`
 * Notificaciones locales del dispositivo
 * Recursos de localización para **español** e **inglés**
 * Arquitectura **offline-first** sin dependencia de servicios externos
+
+---
+
+
+## 📁 Estructura actual
+
+La estructura actual del proyecto organiza las clases por capas lógicas dentro del proyecto MAUI:
+
+```text
+RememberMePlusApp/
+├── Application/
+│   └── Tasks/
+│       └── IReminderTaskRepository.cs
+│
+├── Domain/
+│   └── Tasks/
+│       ├── ReminderTask.cs
+│       ├── ReminderTaskId.cs
+│       ├── ReminderTitle.cs
+│       ├── PostponeMinutes.cs
+│       └── ReminderPriority.cs
+│
+├── Infrastructure/
+│   ├── DependencyInjection.cs
+│   └── Data/
+│       ├── Abstractions/
+│       │   ├── IDatabaseInitializer.cs
+│       │   └── IDbConnectionFactory.cs
+│       ├── Options/
+│       │   └── SqliteDataOptions.cs
+│       └── Dapper/
+│           ├── SqliteDbConnectionFactory.cs
+│           ├── Models/ReminderTaskDataModel.cs
+│           ├── Mappers/ReminderTaskDataMapper.cs
+│           ├── Repositories/DapperReminderTaskRepository.cs
+│           └── Schema/SqliteDatabaseInitializer.cs
+│
+├── Presentation/
+│   ├── Pages/MainPage.xaml(.cs)
+│   ├── Shell/AppShell.xaml(.cs)
+│   └── ViewModels/HomeViewModel.cs
+│
+├── App.xaml(.cs)
+├── MauiProgram.cs
+└── RememberMePlusApp.csproj
+```
+
+### Responsabilidad de cada capa
+
+| Capa | Responsabilidad | Puede depender de | No debe depender de |
+| --- | --- | --- | --- |
+| `Domain` | Entidades, value objects, agregados y reglas de negocio | BCL/.NET | MAUI, SQLite, Dapper, Android, Infrastructure, Presentation |
+| `Application` | Contratos y orquestación de casos de uso | Domain | MAUI, SQLite, Dapper, Infrastructure, Presentation |
+| `Infrastructure` | Implementaciones técnicas: SQLite, Dapper, inicialización y mapeo | Application, Domain | Presentation |
+| `Presentation` | UI MAUI, Shell, Pages y ViewModels | Application | SQL, Dapper, detalles de persistencia |
+| `MauiProgram` | Composition root y registro DI | Todas para composición | Lógica de negocio |
+
+### Clases principales por capa
+
+| Directorio | Clases |
+| --- | --- |
+| `Domain/Tasks` | `ReminderTask`, `ReminderTaskId`, `ReminderTitle`, `PostponeMinutes`, `ReminderPriority` |
+| `Application/Tasks` | `IReminderTaskRepository` |
+| `Infrastructure/Data/Abstractions` | `IDbConnectionFactory`, `IDatabaseInitializer` |
+| `Infrastructure/Data/Options` | `SqliteDataOptions` |
+| `Infrastructure/Data/Dapper` | `SqliteDbConnectionFactory` |
+| `Infrastructure/Data/Dapper/Models` | `ReminderTaskDataModel` |
+| `Infrastructure/Data/Dapper/Mappers` | `ReminderTaskDataMapper` |
+| `Infrastructure/Data/Dapper/Repositories` | `DapperReminderTaskRepository` |
+| `Infrastructure/Data/Dapper/Schema` | `SqliteDatabaseInitializer` |
+| `Presentation/Pages` | `MainPage` |
+| `Presentation/Shell` | `AppShell` |
+| `Presentation/ViewModels` | `HomeViewModel` |
 
 ---
 

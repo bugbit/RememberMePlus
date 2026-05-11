@@ -28,10 +28,67 @@ Generar únicamente contenido directamente relacionado con estas tecnologías y 
 - **Android**
 - **MVVM**
 - **SQLite**
+- **Dapper** para acceso a datos SQLite, aislado en infraestructura
 - notificaciones locales
 - localización de recursos
 
 No generar código o propuestas técnicas ajenas a este stack salvo que el repositorio ya las use explícitamente.
+
+
+## Estructura actual del proyecto
+
+La solución mantiene una separación lógica por capas dentro del proyecto MAUI `RememberMePlusApp`:
+
+```text
+RememberMePlusApp/
+├── Domain/
+│   └── Tasks/
+├── Application/
+│   └── Tasks/
+├── Infrastructure/
+│   └── Data/
+│       ├── Abstractions/
+│       ├── Options/
+│       └── Dapper/
+│           ├── Models/
+│           ├── Mappers/
+│           ├── Repositories/
+│           └── Schema/
+└── Presentation/
+    ├── Pages/
+    ├── Shell/
+    └── ViewModels/
+```
+
+Responsabilidades obligatorias:
+
+- `Domain`: entidades, agregados, value objects, enums y reglas puras de negocio. No puede depender de MAUI, SQLite, Dapper, Android, Infrastructure ni Presentation.
+- `Application`: contratos y casos de uso. Puede depender de `Domain`; no puede depender de MAUI, SQLite, Dapper ni `Infrastructure`.
+- `Infrastructure`: implementaciones técnicas. Implementa contratos de `Application` y puede usar SQLite/Dapper.
+- `Infrastructure/Data/Abstractions`: interfaces técnicas de infraestructura, como factories o inicializadores de base de datos.
+- `Infrastructure/Data/Options`: opciones de configuración de infraestructura, como ruta de SQLite.
+- `Infrastructure/Data/Dapper`: única ubicación permitida para clases que usen Dapper directamente.
+- `Infrastructure/Data/Dapper/Models`: modelos planos de persistencia; no son entidades de dominio.
+- `Infrastructure/Data/Dapper/Mappers`: conversión entre modelos de persistencia y dominio.
+- `Infrastructure/Data/Dapper/Repositories`: repositorios concretos basados en Dapper.
+- `Infrastructure/Data/Dapper/Schema`: creación y evolución del esquema SQLite local.
+- `Presentation`: vistas MAUI, Shell, Pages y ViewModels. No puede contener SQL, Dapper ni lógica de negocio.
+- `MauiProgram`: composition root. Puede registrar dependencias concretas, pero no debe contener reglas de negocio.
+
+Clases actuales relevantes:
+
+- `Domain/Tasks`: `ReminderTask`, `ReminderTaskId`, `ReminderTitle`, `PostponeMinutes`, `ReminderPriority`.
+- `Application/Tasks`: `IReminderTaskRepository`.
+- `Infrastructure/Data/Abstractions`: `IDbConnectionFactory`, `IDatabaseInitializer`.
+- `Infrastructure/Data/Options`: `SqliteDataOptions`.
+- `Infrastructure/Data/Dapper`: `SqliteDbConnectionFactory`.
+- `Infrastructure/Data/Dapper/Models`: `ReminderTaskDataModel`.
+- `Infrastructure/Data/Dapper/Mappers`: `ReminderTaskDataMapper`.
+- `Infrastructure/Data/Dapper/Repositories`: `DapperReminderTaskRepository`.
+- `Infrastructure/Data/Dapper/Schema`: `SqliteDatabaseInitializer`.
+- `Presentation/Pages`: `MainPage`.
+- `Presentation/Shell`: `AppShell`.
+- `Presentation/ViewModels`: `HomeViewModel`.
 
 ## Restricciones arquitectónicas obligatorias
 
@@ -44,6 +101,10 @@ En cada cambio debes comprobar que se cumplen estas reglas:
 5. La **UI** no contiene lógica de negocio.
 6. Mantener consistencia con **DDD**: entidades, value objects, servicios de dominio, agregados y reglas del dominio donde corresponda.
 7. Aplicar **SOLID** en diseño, extensibilidad, acoplamiento y responsabilidades.
+
+8. Las clases que usen `Dapper` directamente deben vivir en `Infrastructure/Data/Dapper` o subcarpetas.
+9. Los modelos de persistencia no deben sustituir a entidades o value objects del dominio.
+10. Los mapeadores entre persistencia y dominio deben permanecer en infraestructura.
 
 Si una propuesta rompe estas reglas, debe corregirse antes de darla por válida.
 
@@ -195,8 +256,10 @@ Mantener alineación con estas decisiones del proyecto:
 ## Qué evitar
 
 - lógica de negocio en code-behind o en vistas
-- acoplar dominio a MAUI o SQLite
+- acoplar dominio a MAUI, SQLite o Dapper
 - mezclar responsabilidades entre capas
+- usar Dapper fuera de `Infrastructure/Data/Dapper`
+- colocar modelos de persistencia dentro de `Domain` o `Application`
 - respuestas largas sin valor práctico
 - código no solicitado o fuera del stack
 - soluciones complejas cuando exista una alternativa simple
