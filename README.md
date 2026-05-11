@@ -5,6 +5,7 @@
 * [🧠 Descripción](#-descripción)
 * [🚀 Objetivos del proyecto](#-objetivos-del-proyecto)
 * [🏗️ Arquitectura](#️-arquitectura)
+* [📁 Estructura de directorios](#-estructura-de-directorios)
 * [🧩 Tecnologías previstas](#-tecnologías-previstas)
 * [🔄 Flujo completo](#-flujo-completo)
 * [⏸️ Política de posposición](#️-política-de-posposición)
@@ -111,6 +112,51 @@ Capa encargada de la persistencia y de los servicios de plataforma.
 * integración con notificaciones locales del dispositivo
 * uso exclusivo de recursos locales en tiempo de ejecución
 * gestión de recursos de localización para interfaz y notificaciones
+
+---
+
+## 📁 Estructura de directorios
+
+La organización base del proyecto separa el dominio de los detalles de infraestructura y persistencia local:
+
+```text
+RememberMePlusApp/
+├── Domain/
+│   └── Tasks/
+│       ├── ReminderTask.cs
+│       ├── ReminderTaskId.cs
+│       ├── ReminderTitle.cs
+│       ├── PostponeMinutes.cs
+│       ├── ReminderPriority.cs
+│       └── IReminderTaskRepository.cs
+│
+├── Infrastructure/
+│   ├── DependencyInjection.cs
+│   └── Data/
+│       ├── Abstractions/
+│       │   ├── IDatabaseInitializer.cs
+│       │   └── IDbConnectionFactory.cs
+│       ├── Options/
+│       │   └── SqliteDataOptions.cs
+│       └── Dapper/
+│           ├── SqliteDbConnectionFactory.cs
+│           ├── Models/
+│           │   └── ReminderTaskDataModel.cs
+│           ├── Mappers/
+│           │   └── ReminderTaskDataMapper.cs
+│           ├── Repositories/
+│           │   └── DapperReminderTaskRepository.cs
+│           └── Schema/
+│               └── SqliteDatabaseInitializer.cs
+```
+
+**Criterios de organización:**
+
+* `Domain/Tasks` contiene el agregado, value objects, prioridad y contratos del dominio de recordatorios.
+* `Infrastructure/Data/Abstractions` contiene contratos técnicos para inicialización y creación de conexiones.
+* `Infrastructure/Data/Options` centraliza la configuración local de SQLite.
+* `Infrastructure/Data/Dapper` contiene la implementación concreta de persistencia con SQLite/Dapper, separando modelos, mapeadores, repositorios y esquema.
+* `Infrastructure/DependencyInjection.cs` registra las implementaciones de infraestructura sin introducir lógica de negocio en la UI.
 
 ---
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using RememberMePlusApp.Infrastructure;
 
 namespace RememberMePlusApp
 {
@@ -14,6 +15,8 @@ namespace RememberMePlusApp
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
+
+            builder.Services.AddInfrastructure();
 
 #if DEBUG
     		builder.Logging.AddDebug();
